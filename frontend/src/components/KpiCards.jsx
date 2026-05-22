@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
   return (

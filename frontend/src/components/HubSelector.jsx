@@ -1,4 +1,3 @@
-import React from 'react';
 
 const CITIES = [
   { name: 'Casablanca', lat: 33.5731, lon: -7.5898 },
