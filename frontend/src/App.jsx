@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import HubSelector from './components/HubSelector';
 import KpiCards from './components/KpiCards';
 import SolarChart from './components/SolarChart';
@@ -9,12 +9,71 @@ export default function App() {
   const [pKwp, setPKwp] = useState(100);
   const [alphaSelf, setAlphaSelf] = useState(75);
 
-  // Fallback calculations for instant UI feedback
+  // Live HTTP response states
+  const [apiData, setApiData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Asynchronous API network bridge execution
+  useEffect(() => {
+    let isMounted = true;
+    
+    const fetchSolarMetrics = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await fetch("http://localhost:8000/api/solar-data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            city: selectedCity.name,
+            lat: selectedCity.lat,
+            lon: selectedCity.lon,
+            system_size_kwp: pKwp,
+            self_consumption_ratio: alphaSelf / 100,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server status fault: ${response.status} Error`);
+        }
+
+        const data = await response.json();
+        if (isMounted) {
+          setApiData(data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err.message || "Failed to communicate with calculation service.");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchSolarMetrics();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedCity, pKwp, alphaSelf]);
+
+  // Fallback calculations for seamless UI display if backend is loading or unreachable
   const defaultPsh = 1820;
   const performanceRatio = 0.78;
   const annualYieldKwh = pKwp * defaultPsh * performanceRatio;
   const simulatedSavingsMad = (annualYieldKwh * (alphaSelf / 100)) * 1.10;
   const simulatedAvoidedCo2Tons = (annualYieldKwh * 0.604) / 1000;
+
+  // Resolve metrics: Prefer live calculated backend aggregates, default to simulated models
+  const liveYield = apiData?.metrics?.summary?.total_generated_kwh ?? annualYieldKwh;
+  const liveSavings = apiData?.metrics?.financials?.total_annual_benefit_mad ?? simulatedSavingsMad;
+  const liveCo2 = apiData?.metrics?.environmental?.avoided_co2_tons_per_year ?? simulatedAvoidedCo2Tons;
+  const ghiDailyVector = apiData?.raw_data_hourly_or_daily?.ghi_daily ?? {};
 
   return (
     <div className="h-screen w-screen bg-slate-950 text-slate-100 flex overflow-hidden antialiased select-none">
@@ -58,9 +117,15 @@ export default function App() {
           </div>
         </div>
 
-        <div className="text-[10px] text-slate-600 font-mono leading-relaxed">
-          ANRE Tariff: 1.10 MAD/kWh <br />
-          Surplus Cap: 20% (Law 82-21)
+        {/* Real-time Loading and Error Tickers */}
+        <div className="flex flex-col gap-1 font-mono text-[10px]">
+          {loading && <span className="text-amber-400 animate-pulse">⚡ Requesting data...</span>}
+          {error && <span className="text-rose-500 font-semibold">❌ Status: {error}</span>}
+          {!loading && !error && <span className="text-emerald-500">✓ System Synced (Live)</span>}
+          <div className="text-slate-600 mt-2">
+            ANRE Tariff: 1.10 MAD/kWh <br />
+            Surplus Cap: 20% (Law 82-21)
+          </div>
         </div>
       </aside>
 
@@ -80,10 +145,16 @@ export default function App() {
           </div>
         </header>
 
-        <KpiCards yields={annualYieldKwh} savings={simulatedSavingsMad} co2={simulatedAvoidedCo2Tons} />
+        {/* KPI Cards row fed by live numbers */}
+        <KpiCards yields={liveYield} savings={liveSavings} co2={liveCo2} />
 
-        <section className="flex-1 min-h-0 bg-slate-900 border border-slate-800 rounded p-3">
-          <SolarChart cityName={selectedCity.name} />
+        <section className="flex-1 min-h-0 bg-slate-900 border border-slate-800 rounded p-3 relative">
+          <SolarChart 
+            ghiDaily={ghiDailyVector} 
+            pKwp={pKwp} 
+            alphaSelf={alphaSelf} 
+            isLoading={loading}
+          />
         </section>
       </main>
     </div>

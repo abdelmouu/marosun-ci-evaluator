@@ -70,7 +70,7 @@ def calculate_solar_metrics(
         "financials": {
             "self_consumption_savings_mad": round(annual_savings_self_mad, 2),
             "surplus_injection_revenue_mad": round(annual_revenue_surplus_mad, 2),
-            "total_annual_benefit_mad": round(total_financial_benefit_mad, 2)
+            "total_annual_benefit_mad": round(total_annual_benefit_mad, 2)
         },
         "environmental": {
             "avoided_co2_tons_per_year": round(avoided_co2_tons, 3)
