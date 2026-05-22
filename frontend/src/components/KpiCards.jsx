@@ -18,7 +18,7 @@ export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
     <div className="grid grid-cols-3 gap-4 w-full">
       
       {/* ANNUAL AC YIELD CARD */}
-      <div className="bg-white/75 backdrop-blur-lg border border-[rgba(210,222,240,0.90)] border-l-[3px] border-l-[#1A2540] rounded-2xl shadow-[0_2px_8px_rgba(50,80,130,0.06)] hover:bg-white/92 hover:shadow-[0_8px_24px_rgba(50,80,130,0.10)] transition-all duration-150 ease-out py-5 pr-6 pl-5 min-h-[100px] flex flex-col justify-between">
+      <div className="bg-white/75 backdrop-blur-lg border border-[rgba(210,222,240,0.90)] border-l-[3px] border-l-[#1A2540] rounded-2xl shadow-[0_2px_8px_rgba(50,80,130,0.06)] hover:bg-white/92 hover:shadow-[0_8px_24px_rgba(50,80,130,0.10)] transition-all duration-150 ease-out py-5 pr-6 pl-6 min-h-[100px] flex flex-col justify-between">
         <span className="text-[10px] font-semibold tracking-[0.10em] uppercase text-text-muted truncate max-w-full">
           Annual AC Yield
         </span>
@@ -38,7 +38,7 @@ export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
       </div>
 
       {/* ANNUAL SAVINGS CARD */}
-      <div className="bg-white/75 backdrop-blur-lg border border-[rgba(210,222,240,0.90)] border-l-[3px] border-l-[#E8A020] rounded-2xl shadow-[0_2px_8px_rgba(50,80,130,0.06)] hover:bg-white/92 hover:shadow-[0_8px_24px_rgba(50,80,130,0.10)] transition-all duration-150 ease-out py-5 pr-6 pl-5 min-h-[100px] flex flex-col justify-between">
+      <div className="bg-white/75 backdrop-blur-lg border border-[rgba(210,222,240,0.90)] border-l-[3px] border-l-[#E8A020] rounded-2xl shadow-[0_2px_8px_rgba(50,80,130,0.06)] hover:bg-white/92 hover:shadow-[0_8px_24px_rgba(50,80,130,0.10)] transition-all duration-150 ease-out py-5 pr-6 pl-6 min-h-[100px] flex flex-col justify-between">
         <span className="text-[10px] font-semibold tracking-[0.10em] uppercase text-text-muted truncate max-w-full">
           Annual Savings
         </span>
@@ -58,7 +58,7 @@ export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
       </div>
 
       {/* AVOIDED CO₂ CARD */}
-      <div className="bg-white/75 backdrop-blur-lg border border-[rgba(210,222,240,0.90)] border-l-[3px] border-l-[#2D7D5B] rounded-2xl shadow-[0_2px_8px_rgba(50,80,130,0.06)] hover:bg-white/92 hover:shadow-[0_8px_24px_rgba(50,80,130,0.10)] transition-all duration-150 ease-out py-5 pr-6 pl-5 min-h-[100px] flex flex-col justify-between">
+      <div className="bg-white/75 backdrop-blur-lg border border-[rgba(210,222,240,0.90)] border-l-[3px] border-l-[#2D7D5B] rounded-2xl shadow-[0_2px_8px_rgba(50,80,130,0.06)] hover:bg-white/92 hover:shadow-[0_8px_24px_rgba(50,80,130,0.10)] transition-all duration-150 ease-out py-5 pr-6 pl-6 min-h-[100px] flex flex-col justify-between">
         <span className="text-[10px] font-semibold tracking-[0.10em] uppercase text-text-muted truncate max-w-full">
           Avoided CO₂
         </span>

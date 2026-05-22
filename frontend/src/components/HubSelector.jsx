@@ -22,7 +22,7 @@ export default function HubSelector({ selectedCity, onSelectCity }) {
             <button
               key={city.name}
               onClick={() => onSelectCity(city)}
-              className={`w-full flex justify-between items-center py-2 px-3 transition-all duration-150 ease-out rounded-[10px] border ${
+              className={`w-full flex justify-between items-center py-2 px-3 transition-all duration-150 ease-out rounded-[10px] border active:scale-[0.98] active:shadow-[0_4px_12px_rgba(232,160,32,0.45)] ${
                 isSelected
                   ? 'bg-[#E8A020] border-[#C4851A] shadow-[0_2px_8px_rgba(232,160,32,0.30)]'
                   : 'bg-transparent border-transparent hover:bg-brand/10 hover:border-brand/20 group'
