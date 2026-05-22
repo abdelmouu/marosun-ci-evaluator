@@ -87,19 +87,19 @@ export default function App() {
     background: `linear-gradient(to right, #E8A020 0%, #E8A020 ${alphaPercentage}%, rgba(100,130,170,0.20) ${alphaPercentage}%, rgba(100,130,170,0.20) 100%)`
   };
 
-  // Cross-browser Tailwind class string overriding Webkit and Mozilla thumb frameworks
-  const sliderInputClass = "w-full appearance-none h-1 rounded-full outline-none cursor-pointer transition-all " +
-    "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[18px] [&::-webkit-slider-thumb]:h-[18px] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#E8A020] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(232,160,32,0.40)] [&::-webkit-slider-thumb]:cursor-grab active:[&::-webkit-slider-thumb]:cursor-grabbing [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-100 [&::-webkit-slider-thumb]:ease-out hover:[&::-webkit-slider-thumb]:scale-110 hover:[&::-webkit-slider-thumb]:shadow-[0_2px_12px_rgba(232,160,32,0.60)] " +
-    "[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-[18px] [&::-moz-range-thumb]:h-[18px] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#E8A020] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(232,160,32,0.40)] [&::-moz-range-thumb]:cursor-grab active:[&::-moz-range-thumb]:cursor-grabbing [&::-moz-range-thumb]:transition-transform [&::-moz-range-thumb]:duration-100 [&::-moz-range-thumb]:ease-out hover:[&::-moz-range-thumb]:scale-110 hover:[&::-moz-range-thumb]:shadow-[0_2px_12px_rgba(232,160,32,0.60)] [&::-moz-range-thumb]:border-none";
+  // Premium cross-browser slider element class mapping with responsive ease transitions
+  const sliderInputClass = "w-full appearance-none h-1 rounded-full outline-none cursor-pointer transition-all duration-150 ease-out " +
+    "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[18px] [&::-webkit-slider-thumb]:h-[18px] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#E8A020] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(232,160,32,0.40)] [&::-webkit-slider-thumb]:cursor-grab active:[&::-webkit-slider-thumb]:cursor-grabbing [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-out hover:[&::-webkit-slider-thumb]:scale-110 hover:[&::-webkit-slider-thumb]:shadow-[0_2px_12px_rgba(232,160,32,0.60)] " +
+    "[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-[18px] [&::-moz-range-thumb]:h-[18px] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#E8A020] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(232,160,32,0.40)] [&::-moz-range-thumb]:cursor-grab active:[&::-moz-range-thumb]:cursor-grabbing [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:duration-150 [&::-moz-range-thumb]:ease-out hover:[&::-moz-range-thumb]:scale-110 hover:[&::-moz-range-thumb]:shadow-[0_2px_12px_rgba(232,160,32,0.60)] [&::-moz-range-thumb]:border-none";
 
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-canvas-from to-canvas-to text-text-body flex overflow-hidden antialiased font-sans select-none">
       
-      {/* PREMIUM GLASSMORPHISM SIDEBAR */}
+      {/* PREMIUM GLASSMORPHISM SIDEBAR (260px Fixed Frame) */}
       <aside className="w-[260px] bg-white/60 backdrop-blur-xl saturate-[180%] border-r border-[rgba(200,215,235,0.80)] shadow-[4px_0_20px_rgba(50,80,130,0.06)] px-5 py-6 flex flex-col no-print shrink-0 justify-between">
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col">
           
-          {/* Brand Block */}
+          {/* Brand Identifier Block */}
           <div>
             <h1 className="text-sm font-bold tracking-tight text-text-heading">
               <span className="text-[#E8A020]">MaroSun</span> C&I Evaluator
@@ -109,15 +109,17 @@ export default function App() {
             </p>
           </div>
           
-          <div className="border-t border-[rgba(200,215,235,0.50)]" />
+          {/* Section Dividers configured on strict 8px Grid Multiples (mt-6) */}
+          <div className="border-t border-[rgba(200,215,235,0.50)] mt-6" />
           
-          {/* Region Buttons */}
-          <HubSelector selectedCity={selectedCity} onSelectCity={setSelectedCity} />
+          <div className="mt-6">
+            <HubSelector selectedCity={selectedCity} onSelectCity={setSelectedCity} />
+          </div>
           
-          <div className="border-t border-[rgba(200,215,235,0.50)]" />
+          <div className="border-t border-[rgba(200,215,235,0.50)] mt-6" />
           
-          {/* Slider Controls Spec Block */}
-          <div className="flex flex-col gap-5">
+          {/* Interactive Parameters with strict 24px separator space (gap-5) */}
+          <div className="flex flex-col gap-5 mt-6">
             {/* Sizing Controller */}
             <div className="flex flex-col">
               <div className="flex justify-between items-center mb-2">
@@ -156,7 +158,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Status Bar & Legal Footnotes */}
+        {/* Status Indicators */}
         <div className="mt-auto pt-4 border-t border-[rgba(200,215,235,0.50)] flex flex-col gap-1 font-mono text-[10px] text-text-muted">
           {loading && <span className="text-brand animate-pulse">⚡ Requesting data...</span>}
           {error && <span className="text-rose-600 font-semibold">❌ Status: {error}</span>}
@@ -168,15 +170,15 @@ export default function App() {
         </div>
       </aside>
 
-      {/* DASHBOARD WORKSPACE MAIN VIEW */}
-      <main className="flex-1 flex flex-col overflow-hidden p-4 gap-4">
+      {/* DASHBOARD WORKSPACE MAIN VIEW (Exact 28px Horizontal, 24px Vertical Padding Layout) */}
+      <main className="flex-1 flex flex-col overflow-hidden px-7 py-6">
         <header className="flex justify-between items-center border-b border-card-border pb-2">
           <div>
-            <h2 className="text-base font-bold text-text-heading tracking-tight">
+            <h2 className="text-2xl font-bold text-text-heading leading-[1.2] tracking-tight">
               Solar Appraisal Dashboard
             </h2>
-            <p className="text-xs text-text-muted">
-              Evaluating configuration profiles for <span className="text-brand font-semibold">{selectedCity.name}</span> ({selectedCity.lat.toFixed(4)}°N, {selectedCity.lon.toFixed(4)}°W)
+            <p className="text-xs font-normal text-text-muted leading-[1.5] mt-1">
+              Evaluating configuration profiles for <span className="text-brand font-semibold">{selectedCity.name}</span> (<span className="tabular-nums">{selectedCity.lat.toFixed(4)}</span>°N, <span className="tabular-nums">{selectedCity.lon.toFixed(4)}</span>°W)
             </p>
           </div>
           <div className="no-print">
@@ -184,9 +186,13 @@ export default function App() {
           </div>
         </header>
 
-        <KpiCards yields={liveYield} savings={liveSavings} co2={liveCo2} />
+        {/* 20px Top Spacing separator to KPI cluster row */}
+        <div className="mt-5">
+          <KpiCards yields={liveYield} savings={liveSavings} co2={liveCo2} />
+        </div>
 
-        <section className="flex-1 min-h-0 bg-card-surface backdrop-blur-md border border-card-border rounded p-3 relative">
+        {/* 16px Top Spacing separator to Analytics Canvas container with rigid 340px vertical block bounds */}
+        <section className="flex-1 min-h-0 mt-4 h-[340px] relative">
           <SolarChart 
             ghiDaily={ghiDailyVector} 
             pKwp={pKwp} 

@@ -7,13 +7,51 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
 
+function CustomTooltip({ active, payload, label }) {
+  if (active && payload && payload.length) {
+    const ghiData = payload.find((p) => p.dataKey === "Average GHI");
+    const benefitData = payload.find((p) => p.dataKey === "Cumulative Benefit (MAD)");
+
+    return (
+      <div className="bg-[rgba(20,35,65,0.92)] backdrop-blur-lg border border-[rgba(232,160,32,0.40)] rounded-xl p-3 shadow-[0_8px_24px_rgba(10,20,50,0.25)] flex flex-col gap-2 min-w-[200px] font-sans">
+        <span className="text-[10px] font-medium text-white/60 uppercase tracking-wider">
+          {label}
+        </span>
+        <div className="flex flex-col gap-1.5">
+          {ghiData && (
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#4F7CAC]" />
+                <span className="text-[10px] text-white/60">Average GHI</span>
+              </div>
+              <span className="text-sm font-bold text-[#4F7CAC] tabular-nums">
+                {ghiData.value.toFixed(2)}
+              </span>
+            </div>
+          )}
+          {benefitData && (
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-1.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#E8A020]" />
+                <span className="text-[10px] text-white/60">Cumulative Benefit</span>
+              </div>
+              <span className="text-sm font-bold text-[#E8A020] tabular-nums">
+                {Number(benefitData.value).toLocaleString('en-US')}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+  return null;
+}
+
 export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading }) {
   
-  // Transform daily timeseries inputs into monthly aggregates (Maintained core logic)
   const monthlyCalculations = useMemo(() => {
     const keys = Object.keys(ghiDaily);
     
@@ -72,10 +110,6 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading }
     });
   }, [ghiDaily, pKwp, alphaSelf]);
 
-  /**
-   * Premium Unit Abbreviation Formatter Rule
-   * Scales large valuations cleanly into thousands notation (e.g., 450000 → "450K")
-   */
   const formatCurrencyAbbreviation = (value) => {
     if (value >= 1000) {
       return `${(value / 1000).toFixed(0)}K`;
@@ -86,15 +120,26 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading }
   return (
     <div className="w-full h-full bg-white/75 backdrop-blur-lg border border-[rgba(210,222,240,0.90)] rounded-2xl shadow-[0_4px_16px_rgba(50,80,130,0.08)] p-5 flex flex-col relative min-h-[300px]">
       
-      {/* CARD INTERNAL HEADER */}
       <div className="w-full">
-        <h3 className="text-xs font-semibold text-text-muted tracking-wide uppercase">
-          Monthly GHI & Cumulative Financial Benefit
-        </h3>
+        <div className="flex flex-row justify-between items-center">
+          <h3 className="text-xs font-semibold text-text-muted tracking-wide uppercase">
+            Monthly GHI & Cumulative Financial Benefit
+          </h3>
+          
+          <div className="flex items-center gap-4 no-print">
+            <div className="flex items-center gap-1.5">
+              <div className="w-2 h-2 rounded-[2px] bg-[#4F7CAC]" />
+              <span className="text-[11px] font-medium text-text-muted">Average GHI</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-5 h-[2.5px] bg-[#E8A020]" />
+              <span className="text-[11px] font-medium text-text-muted">Cumulative Benefit</span>
+            </div>
+          </div>
+        </div>
         <div className="border-b border-[rgba(210,222,240,0.40)] mb-4 mt-2" />
       </div>
 
-      {/* LOADING OVERLAY STATE */}
       {isLoading && (
         <div className="absolute inset-0 bg-slate-100/40 backdrop-blur-[1px] z-10 flex items-center justify-center pointer-events-none rounded-2xl">
           <span className="text-xs bg-white/90 border border-[rgba(210,222,240,0.90)] text-brand font-sans font-semibold px-4 py-2 rounded-xl shadow-md tracking-wide animate-pulse">
@@ -103,14 +148,12 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading }
         </div>
       )}
 
-      {/* RECHARTS CANVAS BODY */}
       <div className="flex-1 w-full min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={monthlyCalculations}
             margin={{ top: 10, right: 10, left: 10, bottom: 5 }}
           >
-            {/* COMPOSITE INNER GRID CONFIGURATION */}
             <CartesianGrid 
               strokeDasharray="4 6" 
               stroke="rgba(100,130,170,0.12)" 
@@ -118,7 +161,7 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading }
               vertical={false} 
             />
             
-            {/* AXIS SYSTEMS */}
+            {/* Axis Typography aligned to exactly 10px Sora */}
             <XAxis 
               dataKey="name" 
               tickLine={false}
@@ -126,7 +169,6 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading }
               tick={{ fill: '#8A9DBB', fontSize: 10, fontFamily: 'Sora, sans-serif' }}
             />
             
-            {/* LEFT Y-AXIS: SOLAR RADIATION Resource TRACKING */}
             <YAxis 
               yAxisId="left"
               orientation="left"
@@ -138,13 +180,12 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading }
                 angle: -90, 
                 position: 'insideLeft', 
                 fill: '#8A9DBB', 
-                fontSize: 9, 
+                fontSize: 10, 
                 fontFamily: 'Sora, sans-serif',
                 offset: 0 
               }}
             />
 
-            {/* RIGHT Y-AXIS: CUMULATIVE MONETARY VALUATION MATRIX */}
             <YAxis 
               yAxisId="right"
               orientation="right"
@@ -157,26 +198,14 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading }
                 angle: 90, 
                 position: 'insideRight', 
                 fill: '#E8A020', 
-                fontSize: 9, 
+                fontSize: 10, 
                 fontFamily: 'Sora, sans-serif',
                 offset: 0 
               }}
             />
 
-            {/* UNTOUCHED INTERACTIVE TOOLTIPS & LEGENDS PER SPECIFICATION */}
-            <Tooltip 
-              contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '4px' }}
-              labelStyle={{ color: '#f8fafc', fontWeight: 'bold', fontSize: '12px' }}
-              itemStyle={{ fontSize: '11px', padding: '2px 0' }}
-            />
-            
-            <Legend 
-              wrapperStyle={{ paddingTop: '10px', fontSize: '11px' }}
-              verticalAlign="bottom"
-              height={36}
-            />
+            <Tooltip content={<CustomTooltip />} />
 
-            {/* MONTHLY RADIATION DATA VECTOR (SLATE INDIGO BARS) */}
             <Bar 
               yAxisId="left"
               dataKey="Average GHI" 
@@ -186,7 +215,6 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading }
               activeBar={{ fill: '#3A6090' }}
             />
 
-            {/* FINANCIAL RUNNING GAIN GRAPH LINE (AMBER GLOW) */}
             <Line 
               yAxisId="right"
               type="monotone" 

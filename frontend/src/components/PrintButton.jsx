@@ -4,7 +4,6 @@ export default function PrintButton() {
       onClick={() => window.print()}
       className="bg-[#E8A020] text-white text-sm font-semibold py-2.5 px-5 rounded-[10px] shadow-[0_2px_8px_rgba(232,160,32,0.30)] flex items-center gap-2 transition-all duration-150 ease-out hover:bg-[#C4851A] hover:shadow-[0_4px_16px_rgba(232,160,32,0.45)] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 active:shadow-[0_1px_4px_rgba(232,160,32,0.25)]"
     >
-      {/* Premium Minimal 16x16 Printer SVG Icon */}
       <svg 
         className="w-4 h-4 text-white" 
         viewBox="0 0 24 24" 

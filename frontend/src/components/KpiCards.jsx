@@ -1,10 +1,7 @@
 import { useMemo } from 'react';
 
 export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
-  /**
-   * Helper function to safely split integers from fractional decimals 
-   * while adhering to English localized thousands separation formatting.
-   */
+  
   const splitNumber = (value, decimals) => {
     const parts = value.toFixed(decimals).split('.');
     const integerPart = Number(parts[0]).toLocaleString('en-US');
@@ -12,12 +9,12 @@ export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
     return { integerPart, decimalPart };
   };
 
-  // Compute precise sub-string token slices using exact design decimal constraints
   const yieldParts = useMemo(() => splitNumber(yields, 0), [yields]);
   const savingsParts = useMemo(() => splitNumber(savings, 2), [savings]);
   const co2Parts = useMemo(() => splitNumber(co2, 1), [co2]);
 
   return (
+    /* Main KPI structural container locked at 16px row spacing (gap-4) */
     <div className="grid grid-cols-3 gap-4 w-full">
       
       {/* ANNUAL AC YIELD CARD */}

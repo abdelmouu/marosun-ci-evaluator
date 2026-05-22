@@ -9,12 +9,13 @@ const CITIES = [
 
 export default function HubSelector({ selectedCity, onSelectCity }) {
   return (
-    <div className="flex flex-col gap-1 w-full">
+    <div className="flex flex-col w-full">
       <h3 className="text-[9px] font-semibold text-text-muted tracking-[0.12em] uppercase mb-3 px-1">
         Moroccan Industrial Hubs
       </h3>
       
-      <div className="flex flex-col gap-1.5">
+      {/* City row spacing container configured at exactly 8px multiples (gap-1) */}
+      <div className="flex flex-col gap-1">
         {CITIES.map((city) => {
           const isSelected = selectedCity?.name === city.name;
           return (
@@ -28,14 +29,14 @@ export default function HubSelector({ selectedCity, onSelectCity }) {
               }`}
             >
               <span
-                className={`text-sm font-medium transition-colors duration-150 ${
+                className={`text-sm font-medium transition-all duration-150 ease-out ${
                   isSelected ? 'text-white font-semibold' : 'text-text-body group-hover:text-brand'
                 }`}
               >
                 {city.name}
               </span>
               <span
-                className={`text-[11px] tabular-nums transition-colors duration-150 ${
+                className={`text-[11px] tabular-nums transition-all duration-150 ease-out ${
                   isSelected ? 'text-white/70' : 'text-text-faint'
                 }`}
               >
