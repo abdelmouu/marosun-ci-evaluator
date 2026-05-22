@@ -75,10 +75,27 @@ export default function App() {
   const liveCo2 = apiData?.metrics?.environmental?.avoided_co2_tons_per_year ?? simulatedAvoidedCo2Tons;
   const ghiDailyVector = apiData?.raw_data_hourly_or_daily?.ghi_daily ?? {};
 
+  // Compute track filled/unfilled percentages for seamless linear-gradient injection
+  const pKwpPercentage = ((pKwp - 10) / (500 - 10)) * 100;
+  const alphaPercentage = ((alphaSelf - 60) / (95 - 60)) * 100;
+
+  const sliderTrackStyle1 = {
+    background: `linear-gradient(to right, #E8A020 0%, #E8A020 ${pKwpPercentage}%, rgba(100,130,170,0.20) ${pKwpPercentage}%, rgba(100,130,170,0.20) 100%)`
+  };
+
+  const sliderTrackStyle2 = {
+    background: `linear-gradient(to right, #E8A020 0%, #E8A020 ${alphaPercentage}%, rgba(100,130,170,0.20) ${alphaPercentage}%, rgba(100,130,170,0.20) 100%)`
+  };
+
+  // Cross-browser Tailwind class string overriding Webkit and Mozilla thumb frameworks
+  const sliderInputClass = "w-full appearance-none h-1 rounded-full outline-none cursor-pointer transition-all " +
+    "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[18px] [&::-webkit-slider-thumb]:h-[18px] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#E8A020] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(232,160,32,0.40)] [&::-webkit-slider-thumb]:cursor-grab active:[&::-webkit-slider-thumb]:cursor-grabbing [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:duration-100 [&::-webkit-slider-thumb]:ease-out hover:[&::-webkit-slider-thumb]:scale-110 hover:[&::-webkit-slider-thumb]:shadow-[0_2px_12px_rgba(232,160,32,0.60)] " +
+    "[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-[18px] [&::-moz-range-thumb]:h-[18px] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#E8A020] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(232,160,32,0.40)] [&::-moz-range-thumb]:cursor-grab active:[&::-moz-range-thumb]:cursor-grabbing [&::-moz-range-thumb]:transition-transform [&::-moz-range-thumb]:duration-100 [&::-moz-range-thumb]:ease-out hover:[&::-moz-range-thumb]:scale-110 hover:[&::-moz-range-thumb]:shadow-[0_2px_12px_rgba(232,160,32,0.60)] [&::-moz-range-thumb]:border-none";
+
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-canvas-from to-canvas-to text-text-body flex overflow-hidden antialiased font-sans select-none">
       
-      {/* PREMIUM GLASSMORPHISM REDESIGNED SIDEBAR */}
+      {/* PREMIUM GLASSMORPHISM SIDEBAR */}
       <aside className="w-[260px] bg-white/60 backdrop-blur-xl saturate-[180%] border-r border-[rgba(200,215,235,0.80)] shadow-[4px_0_20px_rgba(50,80,130,0.06)] px-5 py-6 flex flex-col no-print shrink-0 justify-between">
         <div className="flex flex-col gap-5">
           
@@ -92,40 +109,48 @@ export default function App() {
             </p>
           </div>
           
-          {/* Subtle Divider Spec */}
           <div className="border-t border-[rgba(200,215,235,0.50)]" />
           
           {/* Region Buttons */}
           <HubSelector selectedCity={selectedCity} onSelectCity={setSelectedCity} />
           
-          {/* Subtle Divider Spec */}
           <div className="border-t border-[rgba(200,215,235,0.50)]" />
           
-          {/* Interactive Parameters */}
-          <div className="flex flex-col gap-4">
+          {/* Slider Controls Spec Block */}
+          <div className="flex flex-col gap-5">
             {/* Sizing Controller */}
-            <div className="flex flex-col gap-1.5">
-              <div className="flex justify-between text-xs font-medium">
-                <span className="text-text-muted">Target Size (P_kWp)</span>
-                <span className="font-mono text-brand font-bold">{pKwp} kWp</span>
+            <div className="flex flex-col">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-[11px] font-medium text-text-body">Target Size (P_kWp)</span>
+                <span className="text-sm font-bold text-brand tabular-nums">{pKwp} kWp</span>
               </div>
               <input 
-                type="range" min="10" max="500" step="5" value={pKwp} 
+                type="range" 
+                min="10" 
+                max="500" 
+                step="5" 
+                value={pKwp} 
                 onChange={(e) => setPKwp(Number(e.target.value))}
-                className="w-full h-1 bg-canvas-base accent-brand rounded-lg appearance-none cursor-pointer"
+                className={sliderInputClass}
+                style={sliderTrackStyle1}
               />
             </div>
 
             {/* Self-Consumption Optimization */}
-            <div className="flex flex-col gap-1.5">
-              <div className="flex justify-between text-xs font-medium">
-                <span className="text-text-muted">Self-Consumption (α)</span>
-                <span className="font-mono text-brand font-bold">{alphaSelf}%</span>
+            <div className="flex flex-col">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-[11px] font-medium text-text-body">Self-Consumption (α)</span>
+                <span className="text-sm font-bold text-brand tabular-nums">{alphaSelf}%</span>
               </div>
               <input 
-                type="range" min="60" max="95" step="1" value={alphaSelf} 
+                type="range" 
+                min="60" 
+                max="95" 
+                step="1" 
+                value={alphaSelf} 
                 onChange={(e) => setAlphaSelf(Number(e.target.value))}
-                className="w-full h-1 bg-canvas-base accent-brand rounded-lg appearance-none cursor-pointer"
+                className={sliderInputClass}
+                style={sliderTrackStyle2}
               />
             </div>
           </div>
