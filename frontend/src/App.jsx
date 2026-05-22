@@ -78,17 +78,31 @@ export default function App() {
   return (
     <div className="h-screen w-screen bg-gradient-to-br from-canvas-from to-canvas-to text-text-body flex overflow-hidden antialiased font-sans select-none">
       
-      {/* PREMIUM INDUSTRIAL GLASS CONFIGURATION SIDEBAR */}
-      <aside className="w-64 bg-card-surface backdrop-blur-md border-r border-card-border flex flex-col justify-between p-4 no-print shrink-0">
+      {/* PREMIUM GLASSMORPHISM REDESIGNED SIDEBAR */}
+      <aside className="w-[260px] bg-white/60 backdrop-blur-xl saturate-[180%] border-r border-[rgba(200,215,235,0.80)] shadow-[4px_0_20px_rgba(50,80,130,0.06)] px-5 py-6 flex flex-col no-print shrink-0 justify-between">
         <div className="flex flex-col gap-5">
+          
+          {/* Brand Block */}
           <div>
-            <h1 className="text-sm font-bold text-text-heading tracking-tight">MaroSun C&I Evaluator</h1>
-            <p className="text-[10px] text-text-muted font-medium">v1.0.0 • Industrial Framework</p>
+            <h1 className="text-sm font-bold tracking-tight text-text-heading">
+              <span className="text-[#E8A020]">MaroSun</span> C&I Evaluator
+            </h1>
+            <p className="text-[10px] font-medium text-text-faint tracking-[0.05em] mt-0.5">
+              v1.0.0 • Industrial Framework
+            </p>
           </div>
           
+          {/* Subtle Divider Spec */}
+          <div className="border-t border-[rgba(200,215,235,0.50)]" />
+          
+          {/* Region Buttons */}
           <HubSelector selectedCity={selectedCity} onSelectCity={setSelectedCity} />
           
-          <div className="border-t border-card-border pt-4 flex flex-col gap-4">
+          {/* Subtle Divider Spec */}
+          <div className="border-t border-[rgba(200,215,235,0.50)]" />
+          
+          {/* Interactive Parameters */}
+          <div className="flex flex-col gap-4">
             {/* Sizing Controller */}
             <div className="flex flex-col gap-1.5">
               <div className="flex justify-between text-xs font-medium">
@@ -117,12 +131,12 @@ export default function App() {
           </div>
         </div>
 
-        {/* Real-time Loading and Error Tickers */}
-        <div className="flex flex-col gap-1 font-mono text-[10px]">
+        {/* Status Bar & Legal Footnotes */}
+        <div className="mt-auto pt-4 border-t border-[rgba(200,215,235,0.50)] flex flex-col gap-1 font-mono text-[10px] text-text-muted">
           {loading && <span className="text-brand animate-pulse">⚡ Requesting data...</span>}
           {error && <span className="text-rose-600 font-semibold">❌ Status: {error}</span>}
-          {!loading && !error && <span className="text-emerald-600">✓ System Synced (Live)</span>}
-          <div className="text-text-faint mt-2">
+          {!loading && !error && <span className="text-emerald-600 font-medium">✓ System Synced (Live)</span>}
+          <div className="text-text-faint text-[9px] leading-relaxed mt-1.5">
             ANRE Tariff: 1.10 MAD/kWh <br />
             Surplus Cap: 20% (Law 82-21)
           </div>
@@ -145,7 +159,6 @@ export default function App() {
           </div>
         </header>
 
-        {/* KPI Cards row fed by live numbers */}
         <KpiCards yields={liveYield} savings={liveSavings} co2={liveCo2} />
 
         <section className="flex-1 min-h-0 bg-card-surface backdrop-blur-md border border-card-border rounded p-3 relative">
