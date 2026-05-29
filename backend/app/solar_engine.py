@@ -3,57 +3,79 @@ MaroSun C&I Evaluator - Solar Calculation Engine
 Processes timeseries data to evaluate system performance, grid interaction restrictions, 
 financial yields, and carbon offsets within the Moroccan regulatory ecosystem.
 """
-
 from typing import Dict, Any
+
+def calculate_dynamic_pr(ghi_val: float, t2m_val: float, noct: float = 45.0, gamma: float = -0.004, pr_base: float = 0.82):
+    """Calcule le PR dynamique basé sur la T2M et l'irradiance (Loi thermique NOCT simplifiée)"""
+    if ghi_val <= 0:
+        return pr_base, t2m_val
+    # Approx irradiance moyenne W/m² (hypothèse : ~10h d'ensoleillement effectif/jour)
+    avg_irradiance_w_m2 = (ghi_val * 1000) / 10.0
+    t_cell = t2m_val + (noct - 20) * (avg_irradiance_w_m2 / 800.0)
+    temp_loss_factor = 1 + gamma * (t_cell - 25)
+    return pr_base * temp_loss_factor, t_cell
 
 def calculate_solar_metrics(
     ghi_daily: Dict[str, float], 
+    t2m_daily: Dict[str, float],
     p_kwp: float, 
-    alpha_self: float
+    alpha_self: float,
+    use_dynamic_pr: bool = False
 ) -> Dict[str, Any]:
-    """
-    Performs comprehensive tech-economic solar appraisals on a daily GHI timeseries dataset.
     
-    Formulas Applied:
-    - PSH = daily GHI value (kWh/m²/day)
-    - E_AC = P_kWp * PSH_annual * 0.78 (Performance Ratio)
-    - Law 82-21 Grid Injection Cap = 20% of annual generation
-    """
-    # 1. Calculate Peak Sun Hours (PSH)
-    # Filter out NASA POWER null values (-999 or negative flags if any)
-    valid_ghi = [val for val in ghi_daily.values() if val >= 0]
+    valid_ghi = []
+    e_ac = 0.0
+    total_t_cell = 0.0
+    total_pr = 0.0
+    valid_days = 0
+    pr_daily = {}
+
+    # 1 & 2. Calculate PSH and Annual Yield applying thermal mechanics day by day
+    for date_str, ghi in ghi_daily.items():
+        if ghi < 0: continue
+        
+        t2m = t2m_daily.get(date_str, 20.0)
+        if t2m < -50: t2m = 20.0 # Clean NASA fill values
+        
+        if use_dynamic_pr:
+            pr_dyn, t_cell = calculate_dynamic_pr(ghi, t2m)
+        else:
+            pr_dyn, t_cell = 0.78, t2m
+            
+        pr_daily[date_str] = round(pr_dyn, 4)
+        e_ac += p_kwp * ghi * pr_dyn
+        
+        valid_ghi.append(ghi)
+        total_t_cell += t_cell
+        total_pr += pr_dyn
+        valid_days += 1
+
     annual_psh = sum(valid_ghi)
+    avg_cell_temp = total_t_cell / valid_days if valid_days else 0
+    avg_pr = total_pr / valid_days if valid_days else 0.78
     
-    # 2. Annual AC Energy Yield (kWh/year)
-    performance_ratio = 0.78
-    e_ac = p_kwp * annual_psh * performance_ratio
-    
-    # 3. Allocation Splits (Self-consumed vs Surplus)
+    # 3. Allocation Splits
     e_self_raw = alpha_self * e_ac
     e_surplus_raw = (1.0 - alpha_self) * e_ac
     
-    # 4. Law 82-21 Surplus Cap (Strict 20% limit of total production)
+    # 4. Law 82-21 Surplus Cap
     surplus_cap_limit = 0.20 * e_ac
     e_surplus_allowed = min(e_surplus_raw, surplus_cap_limit)
     e_surplus_lost = e_surplus_raw - e_surplus_allowed
-    
-    # Net energy effectively utilized by the customer or the grid mix
     e_utilized = e_self_raw + e_surplus_allowed
     
-    # 5. Financial Returns (MAD)
-    tariff_self_consumption = 1.10  # MAD/kWh saved
-    tariff_injection = 0.195       # MAD/kWh average credit
-    
+    # 5. Financial Returns
+    tariff_self_consumption = 1.10
+    tariff_injection = 0.195
     annual_savings_self_mad = e_self_raw * tariff_self_consumption
     annual_revenue_surplus_mad = e_surplus_allowed * tariff_injection
     total_annual_benefit_mad = annual_savings_self_mad + annual_revenue_surplus_mad
     
-    # 6. Environmental Assessment (Tons of CO2 avoided/year)
-    # Base calculation on effective green energy utilized (excluding curtailed surplus)
+    # 6. Environmental Assessment
     co2_factor_kg_kwh = 0.604
     avoided_co2_tons = (e_utilized * co2_factor_kg_kwh) / 1000.0
     
-    return {
+    result = {
         "summary": {
             "system_size_kwp": p_kwp,
             "self_consumption_ratio_alpha": alpha_self,
@@ -74,5 +96,14 @@ def calculate_solar_metrics(
         },
         "environmental": {
             "avoided_co2_tons_per_year": round(avoided_co2_tons, 3)
-        }
+        },
+        "pr_daily": pr_daily # Temporaire pour le bridge de main.py
     }
+    
+    if use_dynamic_pr:
+        result["thermal_model"] = {
+            "pr_used_avg": round(avg_pr, 3),
+            "avg_cell_temp_c": round(avg_cell_temp, 1)
+        }
+        
+    return result
