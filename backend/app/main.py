@@ -2,8 +2,8 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import httpx
+from calendar import monthrange # Ajout de l'import
 
-# Import your analytical calculation engine module
 from app.solar_engine import calculate_solar_metrics
 
 app = FastAPI(title="MaroSun C&I Evaluator API")
@@ -41,46 +41,62 @@ async def get_solar_data(payload: SolarDataRequest):
         "format": "JSON"
     }
 
+    is_simulated = False
+    nasa_data = None
+
     async with httpx.AsyncClient(timeout=15.0) as client:
         try:
             response = await client.get(nasa_url, params=query_params)
             response.raise_for_status()
-        except httpx.HTTPStatusError as exc:
-            raise HTTPException(status_code=exc.response.status_code, detail=f"NASA error: {exc.response.text}")
-        except httpx.RequestError:
-            raise HTTPException(status_code=503, detail="NASA POWER service unreachable.")
+            nasa_data = response.json()
+        except Exception:
+            # Intercepte Timeouts, 404, 5xx, ou erreurs de connexion
+            is_simulated = True
 
-    nasa_data = response.json()
+    ghi_daily = {}
+    dni_daily = {}
+
+    if is_simulated:
+        # Génération d'une courbe GHI annuelle physiquement crédible pour le Maroc
+        # [Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+        monthly_ghi_averages = [3.2, 4.1, 5.5, 6.4, 7.2, 7.8, 7.5, 6.9, 5.8, 4.4, 3.5, 2.9]
+        
+        for month in range(1, 13):
+            days_in_month = monthrange(2025, month)[1]
+            for day in range(1, days_in_month + 1):
+                date_str = f"2025{month:02d}{day:02d}"
+                # Application de la moyenne mensuelle au jour
+                ghi_daily[date_str] = monthly_ghi_averages[month - 1]
+                dni_daily[date_str] = monthly_ghi_averages[month - 1] * 0.8
+    else:
+        try:
+            timeseries_data = nasa_data["properties"]["parameter"]
+            ghi_daily = timeseries_data.get("ALLSKY_SFC_SW_DWN", {})
+            dni_daily = timeseries_data.get("ALLSKY_SFC_SW_DNI", {})
+        except KeyError:
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail="Unexpected JSON dictionary payload map structural match from data provider."
+            )
+
+    # Calculs via le moteur technique
+    calculated_results = calculate_solar_metrics(
+        ghi_daily=ghi_daily,
+        p_kwp=payload.system_size_kwp,
+        alpha_self=payload.self_consumption_ratio
+    )
     
-    try:
-        timeseries_data = nasa_data["properties"]["parameter"]
-        ghi_daily = timeseries_data.get("ALLSKY_SFC_SW_DWN", {})
-        dni_daily = timeseries_data.get("ALLSKY_SFC_SW_DNI", {})
-        
-        # Execute technical evaluations against current Moroccan regulatory landscape
-        calculated_results = calculate_solar_metrics(
-            ghi_daily=ghi_daily,
-            p_kwp=payload.system_size_kwp,
-            alpha_self=payload.self_consumption_ratio
-        )
-        
-        # Return composite object containing raw data vectors and calculated aggregates
-        return {
-            "metadata": {
-                "city": payload.city,
-                "latitude": payload.lat,
-                "longitude": payload.lon
-            },
-            "metrics": calculated_results,
-            "raw_data_hourly_or_daily": {
-                "unit": "kWh/m²/day",
-                "ghi_daily": ghi_daily,
-                "dni_daily": dni_daily
-            }
+    return {
+        "metadata": {
+            "city": payload.city,
+            "latitude": payload.lat,
+            "longitude": payload.lon
+        },
+        "data_source": "simulated" if is_simulated else "live",
+        "metrics": calculated_results,
+        "raw_data_hourly_or_daily": {
+            "unit": "kWh/m²/day",
+            "ghi_daily": ghi_daily,
+            "dni_daily": dni_daily
         }
-        
-    except KeyError:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail="Unexpected JSON dictionary payload map structural match from data provider."
-        )
+    }

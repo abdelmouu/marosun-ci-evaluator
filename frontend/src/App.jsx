@@ -3,6 +3,7 @@ import HubSelector from './components/HubSelector';
 import KpiCards from './components/KpiCards';
 import SolarChart from './components/SolarChart';
 import PrintButton from './components/PrintButton';
+import DataSourceBadge from './components/DataSourceBadge';
 
 export default function App() {
   const [selectedCity, setSelectedCity] = useState({ name: 'Casablanca', lat: 33.5731, lon: -7.5898 });
@@ -197,7 +198,15 @@ export default function App() {
               Evaluating configuration profiles for <span className="text-brand font-semibold">{selectedCity.name}</span> (<span className="tabular-nums">{selectedCity.lat.toFixed(4)}</span>°N, <span className="tabular-nums">{selectedCity.lon.toFixed(4)}</span>°W)
             </p>
           </div>
-          <div className="print:hidden">
+          
+          {/* Container d'alignement pour le Badge de Source et le Bouton d'Audit */}
+          <div className="flex items-center gap-4 print:hidden">
+            {!loading && (
+              <DataSourceBadge 
+                source={apiData?.data_source} 
+                error={error} 
+              />
+            )}
             <PrintButton />
           </div>
         </header>
