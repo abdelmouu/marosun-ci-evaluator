@@ -1,7 +1,9 @@
 import { useState, useCallback } from 'react';
 import { AppContext } from './AppContext';
+import { useTranslation } from 'react-i18next';
 
 export function AppProvider({ children }) {
+  const { t } = useTranslation();
   const [appPhase, setAppPhase] = useState('onboarding');
   
   const [onboardingData, setOnboardingData] = useState({
@@ -42,14 +44,14 @@ export function AppProvider({ children }) {
       });
       
       clearTimeout(timeoutId);
-      if (!response.ok) throw new Error(`Server status fault: ${response.status} Error`);
+      if (!response.ok) throw new Error(t('api_errors.server_fault', { status: response.status }));
       
       const responseData = await response.json();
       setApiData(responseData);
       setApiError(null);
     } catch (err) {
       clearTimeout(timeoutId);
-      setApiError(err.name === 'AbortError' ? 'Request timed out.' : (err.message || "Failed to communicate with calculation service."));
+      setApiError(err.name === 'AbortError' ? t('api_errors.timeout') : (err.message || t('api_errors.communication')));
     }
   };
 

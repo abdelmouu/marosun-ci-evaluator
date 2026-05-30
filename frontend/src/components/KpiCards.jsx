@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
-  
+  const { t } = useTranslation();
+
   const splitNumber = (value, decimals) => {
     const parts = value.toFixed(decimals).split('.');
     const integerPart = Number(parts[0]).toLocaleString('en-US');
@@ -20,9 +22,9 @@ export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
       {/* ANNUAL AC YIELD CARD */}
       <div className="bg-white/75 backdrop-blur-lg border border-[rgba(210,222,240,0.90)] border-l-[3px] border-l-[#1A2540] rounded-2xl shadow-[0_2px_8px_rgba(50,80,130,0.06)] hover:bg-white/92 hover:shadow-[0_8px_24px_rgba(50,80,130,0.10)] transition-all duration-150 ease-out py-5 pr-6 pl-6 min-h-[100px] flex flex-col justify-between">
         <span className="text-[10px] font-semibold tracking-[0.10em] uppercase text-text-muted truncate max-w-full">
-          Annual AC Yield
+          {t('kpi.annual_yield')}
         </span>
-        <div className="flex flex-row items-baseline gap-1 mt-2">
+        <div className="flex flex-row items-baseline gap-1 mt-2 flex-wrap">
           <span className="text-[38px] font-bold leading-none tabular-nums text-[#1A2540]">
             {yieldParts.integerPart}
           </span>
@@ -32,7 +34,7 @@ export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
             </span>
           )}
           <span className="text-sm font-medium text-text-muted ml-1">
-            kWh/yr
+            {t('common.kwh_yr')}
           </span>
         </div>
       </div>
@@ -40,9 +42,9 @@ export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
       {/* ANNUAL SAVINGS CARD */}
       <div className="bg-white/75 backdrop-blur-lg border border-[rgba(210,222,240,0.90)] border-l-[3px] border-l-[#E8A020] rounded-2xl shadow-[0_2px_8px_rgba(50,80,130,0.06)] hover:bg-white/92 hover:shadow-[0_8px_24px_rgba(50,80,130,0.10)] transition-all duration-150 ease-out py-5 pr-6 pl-6 min-h-[100px] flex flex-col justify-between">
         <span className="text-[10px] font-semibold tracking-[0.10em] uppercase text-text-muted truncate max-w-full">
-          Annual Savings
+          {t('kpi.annual_savings')}
         </span>
-        <div className="flex flex-row items-baseline gap-1 mt-2">
+        <div className="flex flex-row items-baseline gap-1 mt-2 flex-wrap">
           <span className="text-[38px] font-bold leading-none tabular-nums text-[#E8A020]">
             {savingsParts.integerPart}
           </span>
@@ -52,7 +54,7 @@ export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
             </span>
           )}
           <span className="text-sm font-medium text-text-muted ml-1">
-            MAD/yr
+            {t('common.mad_yr')}
           </span>
         </div>
       </div>
@@ -60,9 +62,9 @@ export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
       {/* AVOIDED CO₂ CARD */}
       <div className="bg-white/75 backdrop-blur-lg border border-[rgba(210,222,240,0.90)] border-l-[3px] border-l-[#2D7D5B] rounded-2xl shadow-[0_2px_8px_rgba(50,80,130,0.06)] hover:bg-white/92 hover:shadow-[0_8px_24px_rgba(50,80,130,0.10)] transition-all duration-150 ease-out py-5 pr-6 pl-6 min-h-[100px] flex flex-col justify-between">
         <span className="text-[10px] font-semibold tracking-[0.10em] uppercase text-text-muted truncate max-w-full">
-          Avoided CO₂
+          {t('kpi.avoided_co2')}
         </span>
-        <div className="flex flex-row items-baseline gap-1 mt-2">
+        <div className="flex flex-row items-baseline gap-1 mt-2 flex-wrap">
           <span className="text-[38px] font-bold leading-none tabular-nums text-[#2D7D5B]">
             {co2Parts.integerPart}
           </span>
@@ -72,7 +74,7 @@ export default function KpiCards({ yields = 0, savings = 0, co2 = 0 }) {
             </span>
           )}
           <span className="text-sm font-medium text-text-muted ml-1">
-            Tons/yr
+            {t('common.tons_yr')}
           </span>
         </div>
       </div>

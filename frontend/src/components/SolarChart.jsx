@@ -2,12 +2,15 @@ import { useMemo } from 'react';
 import {
   ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
+import { useTranslation } from 'react-i18next';
 
 function CustomTooltip({ active, payload, label }) {
+  const { t, i18n } = useTranslation();
+
   if (active && payload && payload.length) {
-    const ghiData = payload.find(p => p.dataKey === "Average GHI");
-    const benefitData = payload.find(p => p.dataKey === "Cumulative Benefit");
-    const prData = payload.find(p => p.dataKey === "PR");
+    const ghiData = payload.find(p => p.dataKey === "ghi");
+    const benefitData = payload.find(p => p.dataKey === "benefit");
+    const prData = payload.find(p => p.dataKey === "pr");
 
     return (
       <div className="bg-[rgba(20,35,65,0.92)] backdrop-blur-lg border border-[rgba(232,160,32,0.40)] rounded-xl p-3 shadow-[0_8px_24px_rgba(10,20,50,0.25)] flex flex-col gap-2 min-w-[200px] font-sans z-50">
@@ -17,7 +20,7 @@ function CustomTooltip({ active, payload, label }) {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#4F7CAC]" />
-                <span className="text-[10px] text-white/60">GHI Moyen</span>
+                <span className="text-[10px] text-white/60">{t('chart.avg_ghi')}</span>
               </div>
               <span className="text-sm font-bold text-[#4F7CAC] tabular-nums">{ghiData.value.toFixed(2)}</span>
             </div>
@@ -26,7 +29,7 @@ function CustomTooltip({ active, payload, label }) {
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#EF4444]" />
-                <span className="text-[10px] text-white/60">PR Mensuel</span>
+                <span className="text-[10px] text-white/60">{t('chart.monthly_pr')}</span>
               </div>
               <span className="text-sm font-bold text-[#EF4444] tabular-nums">{prData.value.toFixed(3)}</span>
             </div>
@@ -35,9 +38,9 @@ function CustomTooltip({ active, payload, label }) {
             <div className="flex items-center justify-between gap-4 border-t border-white/10 pt-1.5 mt-0.5">
               <div className="flex items-center gap-1.5">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#E8A020]" />
-                <span className="text-[10px] text-white/60">Bénéfice Cumulé</span>
+                <span className="text-[10px] text-white/60">{t('chart.cumulative_benefit')}</span>
               </div>
-              <span className="text-sm font-bold text-[#E8A020] tabular-nums">{Number(benefitData.value).toLocaleString('fr-MA')} MAD</span>
+              <span className="text-sm font-bold text-[#E8A020] tabular-nums">{Number(benefitData.value).toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US')} {t('common.mad')}</span>
             </div>
           )}
         </div>
@@ -48,10 +51,13 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading, apiData }) {
-  
+  const { t, i18n } = useTranslation();
+
   const monthlyCalculations = useMemo(() => {
     const keys = Object.keys(ghiDaily);
-    const monthLabels = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
+    const monthLabels = i18n.language === 'fr' 
+      ? ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"]
+      : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     
     const baseGrid = Array.from({ length: 12 }, (_, i) => ({
       name: monthLabels[i], ghiSum: 0, prSum: 0, yieldSum: 0, dayCount: 0
@@ -90,12 +96,12 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading, 
 
       return {
         name: m.name,
-        "Average GHI": parseFloat(avgDailyGhi.toFixed(2)),
-        "PR": parseFloat(avgPr.toFixed(3)),
-        "Cumulative Benefit": parseFloat(cumulativeFinancialRunningSum.toFixed(0)),
+        ghi: parseFloat(avgDailyGhi.toFixed(2)),
+        pr: parseFloat(avgPr.toFixed(3)),
+        benefit: parseFloat(cumulativeFinancialRunningSum.toFixed(0)),
       };
     });
-  }, [ghiDaily, pKwp, alphaSelf, apiData]);
+  }, [ghiDaily, pKwp, alphaSelf, apiData, i18n.language]);
 
   const formatCurrency = (val) => val >= 1000 ? `${(val / 1000).toFixed(0)}K` : val;
 
@@ -105,20 +111,20 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading, 
       <div className="w-full">
         <div className="flex flex-row justify-between items-center">
           <h3 className="text-xs font-semibold text-text-muted tracking-wide uppercase">
-            Rendement Thermique & Monétaire
+            {t('chart.thermal_monetary_yield')}
           </h3>
           <div className="flex items-center gap-4 no-print">
             <div className="flex items-center gap-1.5">
               <div className="w-2 h-2 rounded-[2px] bg-[#4F7CAC]" />
-              <span className="text-[11px] font-medium text-text-muted">GHI Moyen</span>
+              <span className="text-[11px] font-medium text-text-muted">{t('chart.avg_ghi')}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-4 border-t-2 border-dashed border-[#EF4444]" />
-              <span className="text-[11px] font-medium text-text-muted">Performance (PR)</span>
+              <span className="text-[11px] font-medium text-text-muted">{t('chart.performance_pr')}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-5 h-[2.5px] bg-[#E8A020]" />
-              <span className="text-[11px] font-medium text-text-muted">Bénéfice Cumulé</span>
+              <span className="text-[11px] font-medium text-text-muted">{t('chart.cumulative_benefit')}</span>
             </div>
           </div>
         </div>
@@ -128,7 +134,7 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading, 
       {isLoading && (
         <div className="absolute inset-0 bg-slate-100/40 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-2xl">
           <span className="text-xs bg-white/90 border border-brand/40 text-brand font-semibold px-4 py-2 rounded-xl shadow-md animate-pulse">
-            Recalculating...
+            {t('chart.recalculating')}
           </span>
         </div>
       )}
@@ -149,11 +155,11 @@ export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading, 
 
             <Tooltip content={<CustomTooltip />} />
 
-            <Bar yAxisId="left" dataKey="Average GHI" fill="#4F7CAC" radius={[6, 6, 0, 0]} barSize={28} />
+            <Bar yAxisId="left" dataKey="ghi" fill="#4F7CAC" radius={[6, 6, 0, 0]} barSize={28} />
             
-            <Line yAxisId="pr" type="monotone" dataKey="PR" stroke="#EF4444" strokeWidth={1.5} strokeDasharray="4 4" dot={false} activeDot={{ r: 4, fill: '#EF4444', stroke: '#FFF' }} />
+            <Line yAxisId="pr" type="monotone" dataKey="pr" stroke="#EF4444" strokeWidth={1.5} strokeDasharray="4 4" dot={false} activeDot={{ r: 4, fill: '#EF4444', stroke: '#FFF' }} />
             
-            <Line yAxisId="right" type="monotone" dataKey="Cumulative Benefit" stroke="#E8A020" strokeWidth={2.5} dot={{ r: 4, fill: '#C4851A', stroke: '#FFF' }} activeDot={{ r: 6, fill: '#E8A020', stroke: '#FFF' }} />
+            <Line yAxisId="right" type="monotone" dataKey="benefit" stroke="#E8A020" strokeWidth={2.5} dot={{ r: 4, fill: '#C4851A', stroke: '#FFF' }} activeDot={{ r: 6, fill: '#E8A020', stroke: '#FFF' }} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>

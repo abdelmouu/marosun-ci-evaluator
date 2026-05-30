@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 const CITIES = [
   { name: 'Casablanca', lat: 33.5731, lon: -7.5898 },
   { name: 'Rabat', lat: 34.0209, lon: -6.8416 },
@@ -8,10 +10,12 @@ const CITIES = [
 ];
 
 export default function HubSelector({ selectedCity, onSelectCity }) {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col w-full">
       <h3 className="text-[9px] font-semibold text-text-muted tracking-[0.12em] uppercase mb-3 px-1">
-        Moroccan Industrial Hubs
+        {t('hubs.title')}
       </h3>
       
       {/* City row spacing container configured at exactly 8px multiples (gap-1) */}

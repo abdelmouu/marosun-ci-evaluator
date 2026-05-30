@@ -5,15 +5,10 @@ import PrintButton from './PrintButton';
 import DataSourceBadge from './DataSourceBadge';
 import RegulatoryGauge from './RegulatoryGauge';
 import { useAppContext } from '../context/AppContext';
-
-const PROFILES = [
-  { id: 'factory_24_7', label: '24/7', alpha: 88 },
-  { id: 'office_8_18', label: '8-18h', alpha: 65 },
-  { id: 'hotel_seasonal', label: 'Saisonnier', alpha: 72 },
-  { id: 'weekend_closed', label: 'Week-end', alpha: 60 }
-];
+import { useTranslation } from 'react-i18next';
 
 export default function Dashboard() {
+  const { t, i18n } = useTranslation();
   const { 
     onboardingData, 
     dashboardParams, 
@@ -23,6 +18,13 @@ export default function Dashboard() {
     updateDashboardParams,
     updateCity
   } = useAppContext();
+
+  const PROFILES = [
+    { id: 'factory_24_7', label: t('onboarding.profiles.factory_24_7.title'), alpha: 88 },
+    { id: 'office_8_18', label: t('onboarding.profiles.office_8_18.title'), alpha: 65 },
+    { id: 'hotel_seasonal', label: t('onboarding.profiles.hotel_seasonal.title'), alpha: 72 },
+    { id: 'weekend_closed', label: t('onboarding.profiles.weekend_closed.title'), alpha: 60 }
+  ];
 
   const selectedCity = onboardingData.city;
   const { pKwp, alphaSelf, activeProfile } = dashboardParams;
@@ -56,7 +58,7 @@ export default function Dashboard() {
   return (
     <>
       {/* SIDEBAR */}
-      <aside className="w-[260px] bg-white/60 backdrop-blur-xl saturate-[180%] border-r border-[rgba(200,215,235,0.80)] shadow-[4px_0_20px_rgba(50,80,130,0.06)] px-5 py-6 flex flex-col shrink-0 justify-between">
+      <aside className="w-[260px] bg-white/60 backdrop-blur-xl saturate-[180%] border-r border-[rgba(200,215,235,0.80)] shadow-[4px_0_20px_rgba(50,80,130,0.06)] px-5 py-6 flex flex-col shrink-0 justify-between overflow-y-auto">
         <div className="flex flex-col">
 
           <div>
@@ -64,7 +66,7 @@ export default function Dashboard() {
               <span className="text-[#E8A020]">MaroSun</span> C&I Evaluator
             </h1>
             <p className="text-[10px] font-medium text-text-faint tracking-[0.05em] mt-0.5">
-              v1.0.0 • Industrial Framework
+              {t('dashboard.subtitle')}
             </p>
           </div>
 
@@ -79,8 +81,8 @@ export default function Dashboard() {
           <div className="flex flex-col gap-4 mt-5 print:hidden">
             <div className="flex flex-col">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-[11px] font-medium text-text-body">Target Size (P_kWp)</span>
-                <span className="text-sm font-bold text-brand tabular-nums">{pKwp} kWp</span>
+                <span className="text-[11px] font-medium text-text-body">{t('dashboard.target_size')}</span>
+                <span className="text-sm font-bold text-brand tabular-nums">{pKwp} {t('common.kwp')}</span>
               </div>
               <input
                 type="range"
@@ -96,7 +98,7 @@ export default function Dashboard() {
 
             <div className="flex flex-col">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-[11px] font-medium text-text-body">Self-Consumption (α)</span>
+                <span className="text-[11px] font-medium text-text-body">{t('dashboard.self_consumption')}</span>
                 <span className="text-sm font-bold text-brand tabular-nums">{alphaSelf}%</span>
               </div>
               <input
@@ -139,8 +141,8 @@ export default function Dashboard() {
             <div className="flex flex-col mt-2 print:hidden">
               <div className="flex justify-between items-center">
                 <div>
-                  <span className="text-[11px] font-semibold text-text-body">Modèle Thermique (NOCT)</span>
-                  <p className="text-[9px] text-text-faint mt-0.5 leading-tight pr-2">Ajuste le rendement selon la temp. des cellules.</p>
+                  <span className="text-[11px] font-semibold text-text-body">{t('dashboard.thermal_model')}</span>
+                  <p className="text-[9px] text-text-faint mt-0.5 leading-tight pr-2">{t('dashboard.thermal_desc')}</p>
                 </div>
                 <button
                   onClick={() => updateDashboardParams({ useDynamicThermal: !dashboardParams.useDynamicThermal })}
@@ -154,11 +156,11 @@ export default function Dashboard() {
               {dashboardParams.useDynamicThermal && apiData?.metrics?.thermal_model && (
                 <div className="mt-3 bg-white/40 rounded-lg p-2.5 border border-[rgba(210,222,240,0.60)] flex flex-col gap-1 shadow-sm">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-text-muted">PR effectif moyen</span>
+                    <span className="text-[10px] text-text-muted">{t('dashboard.effective_pr')}</span>
                     <span className="text-[11px] font-bold text-brand tabular-nums">{apiData.metrics.thermal_model.pr_used_avg.toFixed(3)}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] text-text-muted">Temp. cellule moy.</span>
+                    <span className="text-[10px] text-text-muted">{t('dashboard.avg_cell_temp')}</span>
                     <span className="text-[10px] font-medium text-text-muted tabular-nums">{apiData.metrics.thermal_model.avg_cell_temp_c.toFixed(1)} °C</span>
                   </div>
                 </div>
@@ -169,31 +171,31 @@ export default function Dashboard() {
         </div>
 
         <div className="mt-auto pt-4 border-t border-[rgba(200,215,235,0.50)] flex flex-col gap-1 font-mono text-[10px] text-text-muted print:hidden">
-          {isRefetching && <span className="text-brand animate-pulse">⚡ Requesting data...</span>}
-          {apiError && <span className="text-rose-600 font-semibold">❌ Status: {apiError}</span>}
-          {!isRefetching && !apiError && <span className="text-emerald-600 font-medium">✓ System Synced (Live)</span>}
+          {isRefetching && <span className="text-brand animate-pulse">{t('dashboard.requesting_data')}</span>}
+          {apiError && <span className="text-rose-600 font-semibold flex flex-wrap break-all">❌ {t('dashboard.status')} {apiError}</span>}
+          {!isRefetching && !apiError && <span className="text-emerald-600 font-medium">{t('dashboard.system_synced')}</span>}
           <div className="text-text-faint text-[9px] leading-relaxed mt-1.5">
-            ANRE Tariff: 1.10 MAD/kWh <br />
-            Surplus Cap: 20% (Law 82-21)
+            {t('dashboard.anre_tariff')} <br />
+            {t('dashboard.surplus_cap_desc')}
           </div>
         </div>
       </aside>
 
       {/* DASHBOARD WORKSPACE */}
-      <main className="flex-1 flex flex-col overflow-hidden px-7 py-6">
+      <main className="flex-1 flex flex-col overflow-y-auto px-7 py-6">
 
         <div className="hidden print:block border-b-2 border-[#C8D0DC] pb-4 mb-4">
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-xl font-bold text-black m-0">MaroSun C&I Evaluator — Solar Pre-Feasibility Audit</h1>
+              <h1 className="text-xl font-bold text-black m-0">{t('dashboard.title')} — {t('dashboard.pre_feasibility_audit')}</h1>
               <p className="text-xs text-[#555555] mt-1 m-0">
-                Commercial & Industrial Solar Valuation Technical Profile Report
+                {t('dashboard.report_title')}
               </p>
             </div>
             <div className="text-right text-xs text-[#555555]">
-              <div><strong>Evaluation Zone Hub:</strong> {selectedCity.name}</div>
-              <div><strong>Spatial Markers Coordinates:</strong> {selectedCity.lat.toFixed(4)}°N, {selectedCity.lon.toFixed(4)}°W</div>
-              <div><strong>Generation Audit Timestamp:</strong> {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+              <div><strong>{t('dashboard.evaluation_zone')}</strong> {selectedCity.name}</div>
+              <div><strong>{t('dashboard.spatial_markers')}</strong> {selectedCity.lat.toFixed(4)}°N, {selectedCity.lon.toFixed(4)}°W</div>
+              <div><strong>{t('dashboard.timestamp')}</strong> {new Date().toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
             </div>
           </div>
         </div>
@@ -201,10 +203,10 @@ export default function Dashboard() {
         <header className="flex justify-between items-center border-b border-card-border pb-2 print:hidden">
           <div>
             <h2 className="text-2xl font-bold text-text-heading leading-[1.2] tracking-tight">
-              Solar Appraisal Dashboard
+              {t('dashboard.appraisal_dashboard')}
             </h2>
             <p className="text-xs font-normal text-text-muted leading-[1.5] mt-1">
-              Evaluating configuration profiles for <span className="text-brand font-semibold">{selectedCity.name}</span> (<span className="tabular-nums">{selectedCity.lat.toFixed(4)}</span>°N, <span className="tabular-nums">{selectedCity.lon.toFixed(4)}</span>°W)
+              {t('dashboard.evaluating_profiles')} <span className="text-brand font-semibold">{selectedCity.name}</span> (<span className="tabular-nums">{selectedCity.lat.toFixed(4)}</span>°N, <span className="tabular-nums">{selectedCity.lon.toFixed(4)}</span>°W)
             </p>
           </div>
 
@@ -238,7 +240,7 @@ export default function Dashboard() {
         </section>
 
         <div className="hidden print:block mt-auto pt-4 border-t border-[#C8D0DC] text-center text-[10px] text-[#555555] font-mono tracking-wide">
-          ANRE Tariff: 1.10 MAD/kWh | Surplus Cap: 20% (Law 82-21) | MaroSun C&I Evaluator v1.0.0
+          {t('dashboard.anre_tariff')} | {t('dashboard.surplus_cap_desc')} | {t('dashboard.title')} {t('dashboard.subtitle')}
         </div>
       </main>
     </>

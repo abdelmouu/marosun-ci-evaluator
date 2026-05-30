@@ -1,0 +1,121 @@
+{
+  "common": {
+    "kwp": "kWp",
+    "mad": "MAD",
+    "kwh": "kWh",
+    "kwh_month": "kWh/mois",
+    "kwh_yr": "kWh/an",
+    "mad_yr": "MAD/an",
+    "tons_yr": "Tonnes/an",
+    "law_82_21": "Loi 82-21",
+    "ghi": "GHI",
+    "noct": "NOCT",
+    "pr": "PR"
+  },
+  "api_errors": {
+    "timeout": "Requête expirée.",
+    "communication": "Échec de communication avec le service de calcul.",
+    "server_fault": "Erreur serveur : {{status}}"
+  },
+  "onboarding": {
+    "step1_title": "Select Language / Choisissez votre langue",
+    "step1_subtitle": "Cadre technique d'évaluation solaire",
+    "lang_en_sub": "Analyse Technique",
+    "lang_fr_sub": "Audit Technique",
+    "bill_placeholder": "Ex : 25000",
+    "select_hub": "Sélectionnez votre hub industriel",
+    "nasa_data_desc": "Données météo NASA POWER adaptées à votre région.",
+    "choose_city": "Choisir une ville...",
+    "search": "Rechercher...",
+    "no_results": "Aucun résultat",
+    "operational_rhythm": "Quel est le rythme opérationnel ?",
+    "profiles": {
+      "factory_24_7": {
+        "title": "Usine 24h/7",
+        "desc": "Production continue, forte autoconsommation."
+      },
+      "office_8_18": {
+        "title": "Bureaux 8h-18h",
+        "desc": "Charge diurne alignée sur le soleil."
+      },
+      "hotel_seasonal": {
+        "title": "Hôtel / Saisonnier",
+        "desc": "Charge variable, pics estivaux."
+      },
+      "weekend_closed": {
+        "title": "Fermé le week end",
+        "desc": "Charge industrielle classique, surplus weekend."
+      }
+    },
+    "sizing_by_bill": "Dimensionnement par facture",
+    "sizing_desc": "Nous estimons la puissance cible à partir de votre consommation ONEE.",
+    "monthly_bill": "Facture mensuelle moyenne (MAD)",
+    "estimated_consumption": "Consommation estimée :",
+    "suggested_capacity": "Puissance cible suggérée :",
+    "back": "Retour",
+    "continue": "Continuer",
+    "generate_audit": "Générer l'audit"
+  },
+  "dashboard": {
+    "title": "MaroSun C&I Evaluator",
+    "subtitle": "v1.0.0 • Framework Industriel",
+    "target_size": "Puissance Cible (P_kWp)",
+    "self_consumption": "Autoconsommation (α)",
+    "thermal_model": "Modèle Thermique (NOCT)",
+    "thermal_desc": "Ajuste le rendement selon la temp. des cellules.",
+    "effective_pr": "PR effectif moyen",
+    "avg_cell_temp": "Temp. cellule moy.",
+    "requesting_data": "⚡ Requête de données...",
+    "system_synced": "✓ Système synchronisé (Live)",
+    "anre_tariff": "Tarif ANRE: 1.10 MAD/kWh",
+    "surplus_cap_desc": "Cap d'injection: 20% (Loi 82-21)",
+    "pre_feasibility_audit": "Audit de Pré-Faisabilité Solaire",
+    "report_title": "Rapport de Profil Technique de Valorisation Solaire C&I",
+    "evaluation_zone": "Hub de zone d'évaluation :",
+    "spatial_markers": "Coordonnées spatiales :",
+    "timestamp": "Horodatage de l'audit de génération :",
+    "appraisal_dashboard": "Tableau de Bord d'Évaluation Solaire",
+    "evaluating_profiles": "Évaluation des profils de configuration pour",
+    "status": "Statut :"
+  },
+  "kpi": {
+    "annual_yield": "Productible Annuel AC",
+    "annual_savings": "Économies Annuelles",
+    "avoided_co2": "CO₂ Évité"
+  },
+  "chart": {
+    "avg_ghi": "GHI Moyen",
+    "monthly_pr": "PR Mensuel",
+    "cumulative_benefit": "Bénéfice Cumulé",
+    "thermal_monetary_yield": "Rendement Thermique & Monétaire",
+    "performance_pr": "Performance (PR)",
+    "recalculating": "Recalcul en cours..."
+  },
+  "loader": {
+    "ingesting_nasa": "Ingestion des données météo NASA POWER pour la région sélectionnée...",
+    "generating_load": "Génération de la courbe de charge horaire sectorielle...",
+    "modeling_law": "Modélisation du point de bascule réglementaire (Loi 82-21)...",
+    "nasa_unavailable": "NASA POWER API indisponible.",
+    "failing_over": "Basculement sur données climatologiques de référence..."
+  },
+  "regulatory": {
+    "gauge_title": "Jauge d'Injection Réseau (Loi 82-21)",
+    "estimated_loss": "Perte estimée :",
+    "cap_20": "Cap 20%",
+    "optimal_zone": "Réglementaire : Surplus dans la zone optimale (< 15%)",
+    "warning_approaching": "Attention : Vous approchez du cap légal de 20%",
+    "alert_excess": "Alerte : Surplus excédentaire perdu (Loi 82-21)"
+  },
+  "data_source": {
+    "simulated": "⚠️ Données Simulées — API NASA Indisponible",
+    "live": "✓ Données Live — NASA POWER",
+    "simulated_tooltip": "Les valeurs d'ingénierie sont basées sur des moyennes météorologiques statistiquement représentatives pour cette région. Connectez-vous à Internet pour récupérer les données NASA POWER en direct.",
+    "live_tooltip": "Données de télémétrie satellitaire vérifiées extraites de NASA POWER."
+  },
+  "hubs": {
+    "title": "Hubs Industriels Marocains"
+  },
+  "print": {
+    "button": "Imprimer l'Audit"
+  }
+}

@@ -1,4 +1,8 @@
+import { useTranslation } from 'react-i18next';
+
 export default function PrintButton() {
+  const { t } = useTranslation();
+  
   return (
     <button
       onClick={() => window.print()}
@@ -17,7 +21,7 @@ export default function PrintButton() {
         <rect x="6" y="14" width="12" height="8" rx="1" />
         <line x1="10" y1="18" x2="14" y2="18" />
       </svg>
-      Print Audit
+      {t('print.button')}
     </button>
   );
 }

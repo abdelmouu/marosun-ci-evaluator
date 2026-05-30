@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import { useAppContext } from '../context/AppContext';
+import { useTranslation } from 'react-i18next';
 
 export default function TechnicalLoader() {
   const { apiData, apiError, setAppPhase } = useAppContext();
+  const { t } = useTranslation();
   
   const [step, setStep] = useState(0);
   const [showError, setShowError] = useState(false);
@@ -48,9 +50,9 @@ export default function TechnicalLoader() {
   }, [apiData, apiError, setAppPhase]);
 
   const messages = [
-    "Ingestion des données météo NASA POWER pour la région sélectionnée...",
-    "Génération de la courbe de charge horaire sectorielle...",
-    "Modélisation du point de bascule réglementaire (Loi 82-21)..."
+    t('loader.ingesting_nasa'),
+    t('loader.generating_load'),
+    t('loader.modeling_law')
   ];
 
   return (
@@ -116,9 +118,9 @@ export default function TechnicalLoader() {
         {showError && (
           <div className="mt-8 p-4 bg-rose-50 border border-rose-200 rounded-xl w-full animate-in fade-in zoom-in-95 duration-300 shadow-sm">
             <p className="text-sm font-semibold text-rose-600 text-center leading-relaxed">
-              NASA POWER API indisponible.
+              {t('loader.nasa_unavailable')}
               <br/>
-              <span className="text-xs font-medium text-rose-500">Basculement sur données climatologiques de référence...</span>
+              <span className="text-xs font-medium text-rose-500">{t('loader.failing_over')}</span>
             </p>
           </div>
         )}
