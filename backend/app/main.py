@@ -2,7 +2,9 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import httpx
-from calendar import monthrange # Ajout de l'import
+from calendar import monthrange
+from datetime import datetime
+from typing import Dict, Optional
 
 from app.solar_engine import calculate_solar_metrics
 
@@ -24,21 +26,75 @@ class SolarDataRequest(BaseModel):
     self_consumption_ratio: float = Field(0.75, ge=0.60, le=0.95, description="Expected operational alpha factor")
     use_dynamic_pr: bool = Field(False, description="Enable NOCT dynamic thermal modeling")
 
+class MetadataModel(BaseModel):
+    city: str
+    latitude: float
+    longitude: float
+
+class SummaryModel(BaseModel):
+    system_size_kwp: float
+    self_consumption_ratio_alpha: float
+    annual_psh_hours: float
+    total_generated_kwh: float
+    effectively_utilized_kwh: float
+
+class SplitsModel(BaseModel):
+    self_consumed_kwh: float
+    surplus_generated_kwh: float
+    surplus_allowed_grid_kwh: float
+    surplus_lost_curtailed_kwh: float
+
+class FinancialsModel(BaseModel):
+    self_consumption_savings_mad: float
+    surplus_injection_revenue_mad: float
+    total_annual_benefit_mad: float
+
+class EnvironmentalModel(BaseModel):
+    avoided_co2_tons_per_year: float
+
+class ThermalModelModel(BaseModel):
+    pr_used_avg: float
+    avg_cell_temp_c: float
+
+class MetricsModel(BaseModel):
+    summary: SummaryModel
+    splits: SplitsModel
+    financials: FinancialsModel
+    environmental: EnvironmentalModel
+    thermal_model: Optional[ThermalModelModel] = None
+
+class RawDataModel(BaseModel):
+    unit: str
+    ghi_daily: Dict[str, float]
+    dni_daily: Dict[str, float]
+    t2m_daily: Dict[str, float]
+
+class SolarDataResponse(BaseModel):
+    metadata: MetadataModel
+    data_source: str
+    metrics: MetricsModel
+    raw_data_hourly_or_daily: RawDataModel
+
 @app.get("/health", status_code=status.HTTP_200_OK)
 async def health_check():
     return {"status": "healthy", "service": "marosun-backend"}
 
-@app.post("/api/solar-data", status_code=status.HTTP_200_OK)
+@app.post("/api/solar-data", status_code=status.HTTP_200_OK, response_model=SolarDataResponse)
 async def get_solar_data(payload: SolarDataRequest):
     nasa_url = "https://power.larc.nasa.gov/api/temporal/daily/point"
+    
+    # Dynamic calculation of previous full calendar year
+    prev_year = datetime.now().year - 1
+    start_date = f"{prev_year}0101"
+    end_date = f"{prev_year}1231"
 
     query_params = {
-        "parameters": "ALLSKY_SFC_SW_DWN,ALLSKY_SFC_SW_DNI,T2M", # AJOUT DE T2M
+        "parameters": "ALLSKY_SFC_SW_DWN,ALLSKY_SFC_SW_DNI,T2M",
         "community": "RE",
         "longitude": payload.lon,
         "latitude": payload.lat,
-        "start": "20250101",
-        "end": "20251231",
+        "start": start_date,
+        "end": end_date,
         "format": "JSON"
     }
 
@@ -65,9 +121,9 @@ async def get_solar_data(payload: SolarDataRequest):
         monthly_t2m_averages = [12.0, 13.5, 15.0, 17.5, 20.0, 23.5, 26.0, 26.5, 24.0, 21.0, 16.5, 13.0]
 
         for month in range(1, 13):
-            days_in_month = monthrange(2025, month)[1]
+            days_in_month = monthrange(prev_year, month)[1]
             for day in range(1, days_in_month + 1):
-                date_str = f"2025{month:02d}{day:02d}"
+                date_str = f"{prev_year}{month:02d}{day:02d}"
                 ghi_daily[date_str] = monthly_ghi_averages[month - 1]
                 dni_daily[date_str] = monthly_ghi_averages[month - 1] * 0.8
                 t2m_daily[date_str] = monthly_t2m_averages[month - 1]
@@ -101,7 +157,6 @@ async def get_solar_data(payload: SolarDataRequest):
             "unit": "kWh/m²/day",
             "ghi_daily": ghi_daily,
             "dni_daily": dni_daily,
-            "t2m_daily": t2m_daily,
-            "pr_daily": calculated_results.get("pr_daily", {}) # On passe le PR frontend
+            "t2m_daily": t2m_daily
         }
     }

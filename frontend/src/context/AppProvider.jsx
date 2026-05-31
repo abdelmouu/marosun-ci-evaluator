@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { AppContext } from './AppContext';
 import { useTranslation } from 'react-i18next';
+import { DEFAULT_PR, TARIFF_SELF_CONSUMPTION, TARIFF_INJECTION } from '../config/constants';
 
 export function AppProvider({ children }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [appPhase, setAppPhase] = useState('onboarding');
   
   const [onboardingData, setOnboardingData] = useState({
@@ -24,7 +25,7 @@ export function AppProvider({ children }) {
   const [apiError, setApiError] = useState(null);
   const [isRefetching, setIsRefetching] = useState(false);
 
-  const fetchSolarData = async (city, pKwp, alphaSelf, useDynamicThermal = false, timeout = 15000) => {
+  const fetchSolarData = useCallback(async (city, pKwp, alphaSelf, useDynamicThermal = false, timeout = 15000) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
     
@@ -53,7 +54,7 @@ export function AppProvider({ children }) {
       clearTimeout(timeoutId);
       setApiError(err.name === 'AbortError' ? t('api_errors.timeout') : (err.message || t('api_errors.communication')));
     }
-  };
+  }, [t]);
 
   const completeOnboarding = useCallback((data) => {
     setOnboardingData(data);
@@ -78,7 +79,7 @@ export function AppProvider({ children }) {
     });
 
     fetchSolarData(data.city, pKwpVal, alphaSelfVal, false, 8000);
-  }, []);
+  }, [fetchSolarData]);
 
   const updateDashboardParams = useCallback(async (newParams) => {
     const updatedParams = { ...dashboardParams, ...newParams };
@@ -86,14 +87,68 @@ export function AppProvider({ children }) {
     setIsRefetching(true);
     await fetchSolarData(onboardingData.city, updatedParams.pKwp, updatedParams.alphaSelf, updatedParams.useDynamicThermal);
     setIsRefetching(false);
-  }, [dashboardParams, onboardingData.city]);
+  }, [dashboardParams, onboardingData.city, fetchSolarData]);
 
   const updateCity = useCallback(async (newCity) => {
     setOnboardingData(prev => ({ ...prev, city: newCity }));
     setIsRefetching(true);
     await fetchSolarData(newCity, dashboardParams.pKwp, dashboardParams.alphaSelf, dashboardParams.useDynamicThermal);
     setIsRefetching(false);
-  }, [dashboardParams]);
+  }, [dashboardParams, fetchSolarData]);
+
+  const monthlyCalculations = useMemo(() => {
+    if (!apiData || !apiData.raw_data_hourly_or_daily) return [];
+
+    const ghiDaily = apiData?.raw_data_hourly_or_daily?.ghi_daily || {};
+    const keys = Object.keys(ghiDaily);
+    const monthLabels = i18n.language === 'fr' 
+      ? ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"]
+      : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    
+    const baseGrid = Array.from({ length: 12 }, (_, i) => ({
+      name: monthLabels[i], ghiSum: 0, prSum: 0, yieldSum: 0, dayCount: 0
+    }));
+
+    const prDaily = apiData?.raw_data_hourly_or_daily?.pr_daily || {};
+    const pKwp = dashboardParams.pKwp;
+    const alphaSelf = dashboardParams.alphaSelf;
+
+    if (keys.length === 0) return [];
+
+    keys.forEach((dateStr) => {
+      const ghi = ghiDaily[dateStr];
+      const pr = prDaily[dateStr] || DEFAULT_PR;
+      if (ghi >= 0) {
+        const monthIdx = parseInt(dateStr.substring(4, 6), 10) - 1;
+        if (monthIdx >= 0 && monthIdx < 12) {
+          baseGrid[monthIdx].ghiSum += ghi;
+          baseGrid[monthIdx].prSum += pr;
+          baseGrid[monthIdx].yieldSum += (pKwp * ghi * pr);
+          baseGrid[monthIdx].dayCount += 1;
+        }
+      }
+    });
+
+    let cumulativeFinancialRunningSum = 0;
+
+    return baseGrid.map((m) => {
+      const avgDailyGhi = m.dayCount > 0 ? m.ghiSum / m.dayCount : 0;
+      const avgPr = m.dayCount > 0 ? m.prSum / m.dayCount : DEFAULT_PR;
+
+      const selfConsumedKwh = m.yieldSum * (alphaSelf / 100);
+      const surplusRawKwh = m.yieldSum * (1 - alphaSelf / 100);
+      const surplusAllowedGridKwh = Math.min(surplusRawKwh, m.yieldSum * 0.20);
+
+      const monthlyFinancialBenefit = (selfConsumedKwh * TARIFF_SELF_CONSUMPTION) + (surplusAllowedGridKwh * TARIFF_INJECTION);
+      cumulativeFinancialRunningSum += monthlyFinancialBenefit;
+      return {
+        name: m.name,
+        ghi: parseFloat(avgDailyGhi.toFixed(2)),
+        pr: parseFloat(avgPr.toFixed(3)),
+        benefit: parseFloat(cumulativeFinancialRunningSum.toFixed(0)),
+      };
+    });
+  }, [apiData, dashboardParams.pKwp, dashboardParams.alphaSelf, i18n.language]);
 
   return (
     <AppContext.Provider value={{
@@ -106,7 +161,8 @@ export function AppProvider({ children }) {
       isRefetching,
       completeOnboarding,
       updateDashboardParams,
-      updateCity
+      updateCity,
+      monthlyCalculations
     }}>
       {children}
     </AppContext.Provider>

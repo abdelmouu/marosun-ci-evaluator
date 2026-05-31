@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
+import { TARIFF_SELF_CONSUMPTION, DEFAULT_PR } from '../config/constants';
 
 const CITIES = [
   { name: 'Casablanca', lat: 33.5731, lon: -7.5898 },
@@ -80,8 +81,8 @@ export default function OnboardingWizard() {
   // Bill-to-Size Logic
   const billValue = parseFloat(monthlyBill);
   const isBillValid = !isNaN(billValue) && billValue > 0;
-  const estimatedMonthlyKwh = isBillValid ? billValue / 1.10 : 0;
-  const estimatedKwp = isBillValid ? estimatedMonthlyKwh / (30 * 5.2 * 0.78) : 0;
+  const estimatedMonthlyKwh = isBillValid ? billValue / TARIFF_SELF_CONSUMPTION : 0;
+  const estimatedKwp = isBillValid ? estimatedMonthlyKwh / (30 * 5.2 * DEFAULT_PR) : 0;
 
   const handleLanguageSelect = (lang) => {
     i18n.changeLanguage(lang);

@@ -1,8 +1,8 @@
-import { useMemo } from 'react';
 import {
   ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { useTranslation } from 'react-i18next';
+import { useAppContext } from '../context/AppContext';
 
 function CustomTooltip({ active, payload, label }) {
   const { t, i18n } = useTranslation();
@@ -50,58 +50,9 @@ function CustomTooltip({ active, payload, label }) {
   return null;
 }
 
-export default function SolarChart({ ghiDaily = {}, pKwp, alphaSelf, isLoading, apiData }) {
-  const { t, i18n } = useTranslation();
-
-  const monthlyCalculations = useMemo(() => {
-    const keys = Object.keys(ghiDaily);
-    const monthLabels = i18n.language === 'fr' 
-      ? ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"]
-      : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    
-    const baseGrid = Array.from({ length: 12 }, (_, i) => ({
-      name: monthLabels[i], ghiSum: 0, prSum: 0, yieldSum: 0, dayCount: 0
-    }));
-
-    const prDaily = apiData?.raw_data_hourly_or_daily?.pr_daily || {};
-
-    if (keys.length === 0) return []; // Fallback empty
-
-    keys.forEach((dateStr) => {
-      const ghi = ghiDaily[dateStr];
-      const pr = prDaily[dateStr] || 0.78;
-      if (ghi >= 0) {
-        const monthIdx = parseInt(dateStr.substring(4, 6), 10) - 1;
-        if (monthIdx >= 0 && monthIdx < 12) {
-          baseGrid[monthIdx].ghiSum += ghi;
-          baseGrid[monthIdx].prSum += pr;
-          baseGrid[monthIdx].yieldSum += (pKwp * ghi * pr);
-          baseGrid[monthIdx].dayCount += 1;
-        }
-      }
-    });
-
-    let cumulativeFinancialRunningSum = 0;
-
-    return baseGrid.map((m) => {
-      const avgDailyGhi = m.dayCount > 0 ? m.ghiSum / m.dayCount : 0;
-      const avgPr = m.dayCount > 0 ? m.prSum / m.dayCount : 0.78;
-      
-      const selfConsumedKwh = m.yieldSum * (alphaSelf / 100);
-      const surplusRawKwh = m.yieldSum * (1 - alphaSelf / 100);
-      const surplusAllowedGridKwh = Math.min(surplusRawKwh, m.yieldSum * 0.20);
-      
-      const monthlyFinancialBenefit = (selfConsumedKwh * 1.10) + (surplusAllowedGridKwh * 0.195);
-      cumulativeFinancialRunningSum += monthlyFinancialBenefit;
-
-      return {
-        name: m.name,
-        ghi: parseFloat(avgDailyGhi.toFixed(2)),
-        pr: parseFloat(avgPr.toFixed(3)),
-        benefit: parseFloat(cumulativeFinancialRunningSum.toFixed(0)),
-      };
-    });
-  }, [ghiDaily, pKwp, alphaSelf, apiData, i18n.language]);
+export default function SolarChart({ isLoading }) {
+  const { t } = useTranslation();
+  const { monthlyCalculations = [], apiData = {} } = useAppContext();
 
   const formatCurrency = (val) => val >= 1000 ? `${(val / 1000).toFixed(0)}K` : val;
 

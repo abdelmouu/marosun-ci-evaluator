@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { DEFAULT_PSH, DEFAULT_PR, TARIFF_INJECTION } from '../config/constants';
 
 export default function RegulatoryGauge({ pKwp, alphaSelf, apiData }) {
   const { t, i18n } = useTranslation();
@@ -14,16 +15,14 @@ export default function RegulatoryGauge({ pKwp, alphaSelf, apiData }) {
     surplusLost = apiData.metrics.splits.surplus_lost_curtailed_kwh;
   } else {
     // Fallback Frontend basé sur une moyenne PSH
-    const defaultPsh = 1820;
-    const performanceRatio = 0.78;
-    totalAc = pKwp * defaultPsh * performanceRatio;
+    totalAc = pKwp * DEFAULT_PSH * DEFAULT_PR;
     surplusRaw = totalAc * (1 - (alphaSelf / 100));
     surplusLost = Math.max(0, surplusRaw - (totalAc * 0.20));
   }
 
   // Ratio d'injection brut et monétisation de la perte
   const surplusRatioPct = totalAc > 0 ? (surplusRaw / totalAc) * 100 : 0;
-  const lossMad = surplusLost * 0.195;
+  const lossMad = surplusLost * TARIFF_INJECTION;
 
   // Détermination des états de la jauge
   let fillColor = '#2D7D5B';

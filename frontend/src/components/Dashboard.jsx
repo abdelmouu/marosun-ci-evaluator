@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import HubSelector from './HubSelector';
 import KpiCards from './KpiCards';
 import SolarChart from './SolarChart';
 import PrintButton from './PrintButton';
+import PdfButton from './PdfButton';
 import DataSourceBadge from './DataSourceBadge';
 import RegulatoryGauge from './RegulatoryGauge';
+import ExecutiveReport from './ExecutiveReport';
 import { useAppContext } from '../context/AppContext';
 import { useTranslation } from 'react-i18next';
+import { DEFAULT_PSH, DEFAULT_PR, TARIFF_SELF_CONSUMPTION } from '../config/constants';
 
 export default function Dashboard() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { 
     onboardingData, 
     dashboardParams, 
@@ -19,6 +23,8 @@ export default function Dashboard() {
     updateCity
   } = useAppContext();
 
+  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
+
   const PROFILES = [
     { id: 'factory_24_7', label: t('onboarding.profiles.factory_24_7.title'), alpha: 88 },
     { id: 'office_8_18', label: t('onboarding.profiles.office_8_18.title'), alpha: 65 },
@@ -27,12 +33,10 @@ export default function Dashboard() {
   ];
 
   const selectedCity = onboardingData.city;
-  const { pKwp, alphaSelf, activeProfile } = dashboardParams;
+  const { pKwp, alphaSelf, activeProfile, useDynamicThermal = false } = dashboardParams;
 
-  const defaultPsh = 1820;
-  const performanceRatio = 0.78;
-  const annualYieldKwh = pKwp * defaultPsh * performanceRatio;
-  const simulatedSavingsMad = (annualYieldKwh * (alphaSelf / 100)) * 1.10;
+  const annualYieldKwh = pKwp * DEFAULT_PSH * DEFAULT_PR;
+  const simulatedSavingsMad = (annualYieldKwh * (alphaSelf / 100)) * TARIFF_SELF_CONSUMPTION;
   const simulatedAvoidedCo2Tons = (annualYieldKwh * 0.604) / 1000;
 
   const liveYield = apiData?.metrics?.summary?.total_generated_kwh ?? annualYieldKwh;
@@ -53,7 +57,7 @@ export default function Dashboard() {
 
   const sliderInputClass = "w-full appearance-none h-1 rounded-full outline-none cursor-pointer transition-all duration-150 ease-out " +
     "[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-[18px] [&::-webkit-slider-thumb]:h-[18px] [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#E8A020] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(232,160,32,0.40)] [&::-webkit-slider-thumb]:cursor-grab active:[&::-webkit-slider-thumb]:cursor-grabbing [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-150 [&::-webkit-slider-thumb]:ease-out hover:[&::-webkit-slider-thumb]:scale-110 hover:[&::-webkit-slider-thumb]:shadow-[0_2px_12px_rgba(232,160,32,0.60)] " +
-    "[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-[18px] [&::-moz-range-thumb]:h-[18px] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#E8A020] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(232,160,32,0.40)] [&::-moz-range-thumb]:cursor-grab active:[&::-moz-range-thumb]:cursor-grabbing [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:duration-150 [&::-moz-range-thumb]:ease-out hover:[&::-moz-range-thumb]:scale-110 hover:[&::-moz-range-thumb]:shadow-[0_2px_12px_rgba(232,160,32,0.60)] [&::-moz-range-thumb]:border-none";
+    "[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-[18px] [&::-moz-range-thumb]:h-[18px] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#E8A020] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(232,160,32,0.40)] [&::-moz-range-thumb]:cursor-grab active:[&::-moz-range-thumb]:cursor-grabbing [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:duration-150 [&::-moz-range-thumb]:ease-out hover:[&::-webkit-slider-thumb]:scale-110 hover:[&::-webkit-slider-thumb]:shadow-[0_2px_12px_rgba(232,160,32,0.60)] [&::-moz-range-thumb]:border-none";
 
   return (
     <>
@@ -145,23 +149,23 @@ export default function Dashboard() {
                   <p className="text-[9px] text-text-faint mt-0.5 leading-tight pr-2">{t('dashboard.thermal_desc')}</p>
                 </div>
                 <button
-                  onClick={() => updateDashboardParams({ useDynamicThermal: !dashboardParams.useDynamicThermal })}
-                  className={`relative shrink-0 w-10 h-5 rounded-full transition-colors duration-200 ${dashboardParams.useDynamicThermal ? 'bg-brand' : 'bg-[rgba(100,130,170,0.20)]'}`}
+                  onClick={() => updateDashboardParams({ useDynamicThermal: !useDynamicThermal })}
+                  className={`relative shrink-0 w-10 h-5 rounded-full transition-colors duration-200 ${useDynamicThermal ? 'bg-brand' : 'bg-[rgba(100,130,170,0.20)]'}`}
                 >
-                  <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-md transition-transform duration-200 ${dashboardParams.useDynamicThermal ? 'translate-x-5' : 'translate-x-0'}`} />
+                  <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-md transition-transform duration-200 ${useDynamicThermal ? 'translate-x-5' : 'translate-x-0'}`} />
                 </button>
               </div>
 
               {/* Micro KPI Thermique */}
-              {dashboardParams.useDynamicThermal && apiData?.metrics?.thermal_model && (
+              {dashboardParams?.useDynamicThermal && apiData?.metrics?.thermal_model && (
                 <div className="mt-3 bg-white/40 rounded-lg p-2.5 border border-[rgba(210,222,240,0.60)] flex flex-col gap-1 shadow-sm">
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] text-text-muted">{t('dashboard.effective_pr')}</span>
-                    <span className="text-[11px] font-bold text-brand tabular-nums">{apiData.metrics.thermal_model.pr_used_avg.toFixed(3)}</span>
+                    <span className="text-[11px] font-bold text-brand tabular-nums">{(apiData?.metrics?.thermal_model?.pr_used_avg || 0).toFixed(3)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] text-text-muted">{t('dashboard.avg_cell_temp')}</span>
-                    <span className="text-[10px] font-medium text-text-muted tabular-nums">{apiData.metrics.thermal_model.avg_cell_temp_c.toFixed(1)} °C</span>
+                    <span className="text-[10px] font-medium text-text-muted tabular-nums">{(apiData?.metrics?.thermal_model?.avg_cell_temp_c || 0).toFixed(1)} °C</span>
                   </div>
                 </div>
               )}
@@ -184,29 +188,13 @@ export default function Dashboard() {
       {/* DASHBOARD WORKSPACE */}
       <main className="flex-1 flex flex-col overflow-y-auto px-7 py-6">
 
-        <div className="hidden print:block border-b-2 border-[#C8D0DC] pb-4 mb-4">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-xl font-bold text-black m-0">{t('dashboard.title')} — {t('dashboard.pre_feasibility_audit')}</h1>
-              <p className="text-xs text-[#555555] mt-1 m-0">
-                {t('dashboard.report_title')}
-              </p>
-            </div>
-            <div className="text-right text-xs text-[#555555]">
-              <div><strong>{t('dashboard.evaluation_zone')}</strong> {selectedCity.name}</div>
-              <div><strong>{t('dashboard.spatial_markers')}</strong> {selectedCity.lat.toFixed(4)}°N, {selectedCity.lon.toFixed(4)}°W</div>
-              <div><strong>{t('dashboard.timestamp')}</strong> {new Date().toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-            </div>
-          </div>
-        </div>
-
         <header className="flex justify-between items-center border-b border-card-border pb-2 print:hidden">
           <div>
             <h2 className="text-2xl font-bold text-text-heading leading-[1.2] tracking-tight">
               {t('dashboard.appraisal_dashboard')}
             </h2>
             <p className="text-xs font-normal text-text-muted leading-[1.5] mt-1">
-              {t('dashboard.evaluating_profiles')} <span className="text-brand font-semibold">{selectedCity.name}</span> (<span className="tabular-nums">{selectedCity.lat.toFixed(4)}</span>°N, <span className="tabular-nums">{selectedCity.lon.toFixed(4)}</span>°W)
+              {t('dashboard.evaluating_profiles')} <span className="text-brand font-semibold">{selectedCity?.name || 'Unknown'}</span> (<span className="tabular-nums">{(selectedCity?.lat || 0).toFixed(4)}</span>°N, <span className="tabular-nums">{(selectedCity?.lon || 0).toFixed(4)}</span>°W)
             </p>
           </div>
 
@@ -217,19 +205,20 @@ export default function Dashboard() {
                 error={apiError}
               />
             )}
+            <PdfButton isPdfGenerating={isPdfGenerating} setIsPdfGenerating={setIsPdfGenerating} />
             <PrintButton />
           </div>
         </header>
 
-        <div className="mt-5">
+        <div className="mt-5 print:hidden">
           <KpiCards yields={liveYield} savings={liveSavings} co2={liveCo2} />
         </div>
 
-        <div className="mt-4">
+        <div className="mt-4 print:hidden">
           <RegulatoryGauge pKwp={pKwp} alphaSelf={alphaSelf} apiData={apiData} />
         </div>
 
-        <section className="flex-1 min-h-0 mt-4 h-full relative">
+        <section className="flex-1 min-h-0 mt-4 h-full relative print:hidden">
           <SolarChart
             ghiDaily={ghiDailyVector}
             pKwp={pKwp}
@@ -239,9 +228,7 @@ export default function Dashboard() {
           />
         </section>
 
-        <div className="hidden print:block mt-auto pt-4 border-t border-[#C8D0DC] text-center text-[10px] text-[#555555] font-mono tracking-wide">
-          {t('dashboard.anre_tariff')} | {t('dashboard.surplus_cap_desc')} | {t('dashboard.title')} {t('dashboard.subtitle')}
-        </div>
+        <ExecutiveReport isPdfGenerating={isPdfGenerating} />
       </main>
     </>
   );

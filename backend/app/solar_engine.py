@@ -4,6 +4,12 @@ Processes timeseries data to evaluate system performance, grid interaction restr
 financial yields, and carbon offsets within the Moroccan regulatory ecosystem.
 """
 from typing import Dict, Any
+from app.constants import (
+    ANRE_SELF_CONSUMPTION_TARIFF_MAD_KWH,
+    ANRE_INJECTION_CREDIT_AVG_MAD_KWH,
+    MOROCCAN_GRID_CO2_FACTOR_KG_KWH,
+    LAW_82_21_SURPLUS_INJECTION_CAP
+)
 
 def calculate_dynamic_pr(ghi_val: float, t2m_val: float, noct: float = 45.0, gamma: float = -0.004, pr_base: float = 0.82):
     """Calcule le PR dynamique basé sur la T2M et l'irradiance (Loi thermique NOCT simplifiée)"""
@@ -28,7 +34,6 @@ def calculate_solar_metrics(
     total_t_cell = 0.0
     total_pr = 0.0
     valid_days = 0
-    pr_daily = {}
 
     # 1 & 2. Calculate PSH and Annual Yield applying thermal mechanics day by day
     for date_str, ghi in ghi_daily.items():
@@ -42,7 +47,6 @@ def calculate_solar_metrics(
         else:
             pr_dyn, t_cell = 0.78, t2m
             
-        pr_daily[date_str] = round(pr_dyn, 4)
         e_ac += p_kwp * ghi * pr_dyn
         
         valid_ghi.append(ghi)
@@ -59,21 +63,18 @@ def calculate_solar_metrics(
     e_surplus_raw = (1.0 - alpha_self) * e_ac
     
     # 4. Law 82-21 Surplus Cap
-    surplus_cap_limit = 0.20 * e_ac
+    surplus_cap_limit = LAW_82_21_SURPLUS_INJECTION_CAP * e_ac
     e_surplus_allowed = min(e_surplus_raw, surplus_cap_limit)
     e_surplus_lost = e_surplus_raw - e_surplus_allowed
     e_utilized = e_self_raw + e_surplus_allowed
     
     # 5. Financial Returns
-    tariff_self_consumption = 1.10
-    tariff_injection = 0.195
-    annual_savings_self_mad = e_self_raw * tariff_self_consumption
-    annual_revenue_surplus_mad = e_surplus_allowed * tariff_injection
+    annual_savings_self_mad = e_self_raw * ANRE_SELF_CONSUMPTION_TARIFF_MAD_KWH
+    annual_revenue_surplus_mad = e_surplus_allowed * ANRE_INJECTION_CREDIT_AVG_MAD_KWH
     total_annual_benefit_mad = annual_savings_self_mad + annual_revenue_surplus_mad
     
     # 6. Environmental Assessment
-    co2_factor_kg_kwh = 0.604
-    avoided_co2_tons = (e_utilized * co2_factor_kg_kwh) / 1000.0
+    avoided_co2_tons = (e_utilized * MOROCCAN_GRID_CO2_FACTOR_KG_KWH) / 1000.0
     
     result = {
         "summary": {
@@ -96,8 +97,7 @@ def calculate_solar_metrics(
         },
         "environmental": {
             "avoided_co2_tons_per_year": round(avoided_co2_tons, 3)
-        },
-        "pr_daily": pr_daily # Temporaire pour le bridge de main.py
+        }
     }
     
     if use_dynamic_pr:

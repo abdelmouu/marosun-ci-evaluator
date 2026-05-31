@@ -7,10 +7,12 @@
     "kwh_yr": "kWh/yr",
     "mad_yr": "MAD/yr",
     "tons_yr": "Tons/yr",
-    "law_82_21": "Law 82-21",
+    "law_82_21": "Law 82 21",
     "ghi": "GHI",
     "noct": "NOCT",
-    "pr": "PR"
+    "pr": "PR",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   },
   "api_errors": {
     "timeout": "Request timed out.",
@@ -32,10 +34,10 @@
     "profiles": {
       "factory_24_7": {
         "title": "24/7 Factory",
-        "desc": "Continuous production, high self-consumption."
+        "desc": "Continuous production, high self consumption."
       },
       "office_8_18": {
-        "title": "Offices 8h-18h",
+        "title": "Offices 8h 18h",
         "desc": "Daytime load aligned with the sun."
       },
       "hotel_seasonal": {
@@ -60,7 +62,7 @@
     "title": "MaroSun C&I Evaluator",
     "subtitle": "v1.0.0 • Industrial Framework",
     "target_size": "Target Size (P_kWp)",
-    "self_consumption": "Self-Consumption (α)",
+    "self_consumption": "Self Consumption (α)",
     "thermal_model": "Thermal Model (NOCT)",
     "thermal_desc": "Adjusts yield according to cell temperature.",
     "effective_pr": "Average effective PR",
@@ -68,8 +70,8 @@
     "requesting_data": "⚡ Requesting data...",
     "system_synced": "✓ System Synced (Live)",
     "anre_tariff": "ANRE Tariff: 1.10 MAD/kWh",
-    "surplus_cap_desc": "Surplus Cap: 20% (Law 82-21)",
-    "pre_feasibility_audit": "Solar Pre-Feasibility Audit",
+    "surplus_cap_desc": "Surplus Cap: 20% (Law 82 21)",
+    "pre_feasibility_audit": "Solar Pre Feasibility Audit",
     "report_title": "Commercial & Industrial Solar Valuation Technical Profile Report",
     "evaluation_zone": "Evaluation Zone Hub:",
     "spatial_markers": "Spatial Markers Coordinates:",
@@ -94,12 +96,12 @@
   "loader": {
     "ingesting_nasa": "Ingesting NASA POWER meteorological data for the selected region...",
     "generating_load": "Generating sectoral hourly load profile...",
-    "modeling_law": "Modeling regulatory tipping point (Law 82-21)...",
+    "modeling_law": "Modeling regulatory tipping point (Law 82 21)...",
     "nasa_unavailable": "NASA POWER API unavailable.",
     "failing_over": "Failing over to reference climatological data..."
   },
   "regulatory": {
-    "gauge_title": "Grid Injection Gauge (Law 82-21)",
+    "gauge_title": "Grid Injection Gauge (Law 82 21)",
     "estimated_loss": "Estimated loss:",
     "cap_20": "20% Cap",
     "optimal_zone": "Regulatory: Surplus in optimal zone (< 15%)",
@@ -116,6 +118,53 @@
     "title": "Moroccan Industrial Hubs"
   },
   "print": {
-    "button": "Print Audit"
+    "button": "Print Audit",
+    "download_pdf": "Download PDF"
+  },
+  "report": {
+    "cover_title": "Engineering Valuation Report",
+    "date": "Generated Date",
+    "location": "Location",
+    "project_id": "Project ID",
+    "exec_summary_title": "Executive Summary",
+    "capacity": "System Capacity",
+    "annual_yield": "Annual AC Yield",
+    "annual_benefit": "Total Annual Benefit",
+    "avoided_co2": "Avoided CO₂",
+    "summary_text": "This {{kwp}} kWp solar installation in {{city}} is projected to generate {{yield}} kWh annually. It yields an estimated financial benefit of {{mad}} MAD per year while offsetting {{co2}} tons of CO₂ emissions.",
+    "law_table_title": "Law 82-21 Regulatory Compliance",
+    "status_exceeded": "EXCEEDED",
+    "status_compliant": "COMPLIANT",
+    "metric": "Metric",
+    "value": "Value",
+    "surplus_cap": "Grid Surplus Cap",
+    "surplus_generated": "Surplus Generated",
+    "surplus_allowed": "Surplus Allowed",
+    "curtailed_surplus": "Curtailed Surplus",
+    "tech_params_title": "Technical Parameters",
+    "pr": "Performance Ratio (PR)",
+    "psh": "Peak Sun Hours (PSH)",
+    "noct": "Dynamic NOCT Thermal Model",
+    "alpha": "Self Consumption (Alpha)",
+    "formula": "E_AC = P_kWp × PSH × PR",
+    "monthly_title": "Monthly Breakdown",
+    "month": "Month",
+    "ghi": "Avg GHI",
+    "pr_col": "PR",
+    "yield": "AC Yield",
+    "benefit": "Benefit",
+    "projection_title": "25-Year Financial Projection",
+    "projection_desc": "Assumes standard 0.5% annual system degradation. Static tariff rates.",
+    "year": "Year",
+    "annual_revenue": "Annual Revenue",
+    "cumulative_revenue": "Cumulative Revenue",
+    "disc_data_title": "Data Source:",
+    "disc_data_text": "Meteorological data (GHI, DNI, T2M) is sourced from the NASA POWER (Prediction of Worldwide Energy Resources) API. The data is based on long-term satellite telemetry and is statistically representative of the selected geographic coordinates.",
+    "disc_method_title": "Methodology:",
+    "disc_method_text": "The Performance Ratio (PR) aggregates systemic losses including inverter inefficiency, shading, soiling, and wiring. The dynamic NOCT model (if enabled) further adjusts yields based on hourly ambient temperature profiles.",
+    "disc_legal_title": "Legal Disclaimer:",
+    "disc_legal_text": "This document is a pre-feasibility engineering estimate generated by the MaroSun C&I Evaluator. It does not constitute a binding financial or technical contract. Actual field performance may vary based on micro-climatic conditions and physical installation parameters.",
+    "generating_pdf": "Generating...",
+    "download_pdf": "Download PDF"
   }
 }

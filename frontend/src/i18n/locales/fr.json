@@ -7,10 +7,12 @@
     "kwh_yr": "kWh/an",
     "mad_yr": "MAD/an",
     "tons_yr": "Tonnes/an",
-    "law_82_21": "Loi 82-21",
+    "law_82_21": "Loi 82 21",
     "ghi": "GHI",
     "noct": "NOCT",
-    "pr": "PR"
+    "pr": "PR",
+    "enabled": "Activé",
+    "disabled": "Désactivé"
   },
   "api_errors": {
     "timeout": "Requête expirée.",
@@ -35,7 +37,7 @@
         "desc": "Production continue, forte autoconsommation."
       },
       "office_8_18": {
-        "title": "Bureaux 8h-18h",
+        "title": "Bureaux 8h 18h",
         "desc": "Charge diurne alignée sur le soleil."
       },
       "hotel_seasonal": {
@@ -68,8 +70,8 @@
     "requesting_data": "⚡ Requête de données...",
     "system_synced": "✓ Système synchronisé (Live)",
     "anre_tariff": "Tarif ANRE: 1.10 MAD/kWh",
-    "surplus_cap_desc": "Cap d'injection: 20% (Loi 82-21)",
-    "pre_feasibility_audit": "Audit de Pré-Faisabilité Solaire",
+    "surplus_cap_desc": "Cap d'injection: 20% (Loi 82 21)",
+    "pre_feasibility_audit": "Audit de Pré Faisabilité Solaire",
     "report_title": "Rapport de Profil Technique de Valorisation Solaire C&I",
     "evaluation_zone": "Hub de zone d'évaluation :",
     "spatial_markers": "Coordonnées spatiales :",
@@ -94,17 +96,17 @@
   "loader": {
     "ingesting_nasa": "Ingestion des données météo NASA POWER pour la région sélectionnée...",
     "generating_load": "Génération de la courbe de charge horaire sectorielle...",
-    "modeling_law": "Modélisation du point de bascule réglementaire (Loi 82-21)...",
+    "modeling_law": "Modélisation du point de bascule réglementaire (Loi 82 21)...",
     "nasa_unavailable": "NASA POWER API indisponible.",
     "failing_over": "Basculement sur données climatologiques de référence..."
   },
   "regulatory": {
-    "gauge_title": "Jauge d'Injection Réseau (Loi 82-21)",
+    "gauge_title": "Jauge d'Injection Réseau (Loi 82 21)",
     "estimated_loss": "Perte estimée :",
     "cap_20": "Cap 20%",
     "optimal_zone": "Réglementaire : Surplus dans la zone optimale (< 15%)",
     "warning_approaching": "Attention : Vous approchez du cap légal de 20%",
-    "alert_excess": "Alerte : Surplus excédentaire perdu (Loi 82-21)"
+    "alert_excess": "Alerte : Surplus excédentaire perdu (Loi 82 21)"
   },
   "data_source": {
     "simulated": "⚠️ Données Simulées — API NASA Indisponible",
@@ -116,6 +118,53 @@
     "title": "Hubs Industriels Marocains"
   },
   "print": {
-    "button": "Imprimer l'Audit"
+    "button": "Imprimer l'Audit",
+    "download_pdf": "Télécharger PDF"
+  },
+  "report": {
+    "cover_title": "Rapport d'Évaluation d'Ingénierie",
+    "date": "Date de Génération",
+    "location": "Emplacement",
+    "project_id": "ID Projet",
+    "exec_summary_title": "Résumé Exécutif",
+    "capacity": "Capacité du Système",
+    "annual_yield": "Productible Annuel AC",
+    "annual_benefit": "Bénéfice Annuel Total",
+    "avoided_co2": "CO₂ Évité",
+    "summary_text": "Cette installation solaire de {{kwp}} kWp à {{city}} devrait générer {{yield}} kWh par an. Elle génère un bénéfice financier estimé à {{mad}} MAD par an tout en compensant {{co2}} tonnes d'émissions de CO₂.",
+    "law_table_title": "Conformité Réglementaire Loi 82-21",
+    "status_exceeded": "DÉPASSÉ",
+    "status_compliant": "CONFORME",
+    "metric": "Métrique",
+    "value": "Valeur",
+    "surplus_cap": "Plafond d'Injection Réseau",
+    "surplus_generated": "Surplus Généré",
+    "surplus_allowed": "Surplus Autorisé",
+    "curtailed_surplus": "Surplus Écrêté",
+    "tech_params_title": "Paramètres Techniques",
+    "pr": "Indice de Performance (PR)",
+    "psh": "Heures d'Ensoleillement (PSH)",
+    "noct": "Modèle Thermique Dynamique NOCT",
+    "alpha": "Autoconsommation (Alpha)",
+    "formula": "E_AC = P_kWp × PSH × PR",
+    "monthly_title": "Répartition Mensuelle",
+    "month": "Mois",
+    "ghi": "GHI Moyen",
+    "pr_col": "PR",
+    "yield": "Productible AC",
+    "benefit": "Bénéfice",
+    "projection_title": "Projection Financière sur 25 Ans",
+    "projection_desc": "Suppose une dégradation standard du système de 0,5 % par an. Tarifs statiques.",
+    "year": "Année",
+    "annual_revenue": "Revenu Annuel",
+    "cumulative_revenue": "Revenu Cumulé",
+    "disc_data_title": "Source des Données :",
+    "disc_data_text": "Les données météorologiques (GHI, DNI, T2M) proviennent de l'API NASA POWER. Ces données sont basées sur une télémétrie satellitaire à long terme et sont statistiquement représentatives des coordonnées géographiques sélectionnées.",
+    "disc_method_title": "Méthodologie :",
+    "disc_method_text": "L'Indice de Performance (PR) agrège les pertes systémiques incluant l'inefficacité de l'onduleur, l'ombrage, l'encrassement et le câblage. Le modèle NOCT dynamique (si activé) ajuste les rendements en fonction des profils horaires de température ambiante.",
+    "disc_legal_title": "Avis Légal :",
+    "disc_legal_text": "Ce document est une estimation d'ingénierie de pré-faisabilité générée par le MaroSun C&I Evaluator. Il ne constitue pas un contrat financier ou technique contraignant. Les performances réelles sur site peuvent varier en fonction des conditions micro-climatiques et des paramètres physiques d'installation.",
+    "generating_pdf": "Génération...",
+    "download_pdf": "Télécharger PDF"
   }
 }
