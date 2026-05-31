@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import HubSelector from './HubSelector';
 import KpiCards from './KpiCards';
 import SolarChart from './SolarChart';
 import PrintButton from './PrintButton';
-import PdfButton from './PdfButton';
 import DataSourceBadge from './DataSourceBadge';
 import RegulatoryGauge from './RegulatoryGauge';
 import ExecutiveReport from './ExecutiveReport';
@@ -22,8 +20,6 @@ export default function Dashboard() {
     updateDashboardParams,
     updateCity
   } = useAppContext();
-
-  const [isPdfGenerating, setIsPdfGenerating] = useState(false);
 
   const PROFILES = [
     { id: 'factory_24_7', label: t('onboarding.profiles.factory_24_7.title'), alpha: 88 },
@@ -205,7 +201,6 @@ export default function Dashboard() {
                 error={apiError}
               />
             )}
-            <PdfButton isPdfGenerating={isPdfGenerating} setIsPdfGenerating={setIsPdfGenerating} />
             <PrintButton />
           </div>
         </header>
@@ -228,7 +223,7 @@ export default function Dashboard() {
           />
         </section>
 
-        <ExecutiveReport isPdfGenerating={isPdfGenerating} />
+        <ExecutiveReport />
       </main>
     </>
   );

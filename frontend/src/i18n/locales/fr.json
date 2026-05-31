@@ -165,6 +165,7 @@
     "disc_legal_title": "Avis Légal :",
     "disc_legal_text": "Ce document est une estimation d'ingénierie de pré-faisabilité générée par le MaroSun C&I Evaluator. Il ne constitue pas un contrat financier ou technique contraignant. Les performances réelles sur site peuvent varier en fonction des conditions micro-climatiques et des paramètres physiques d'installation.",
     "generating_pdf": "Génération...",
-    "download_pdf": "Télécharger PDF"
+    "download_pdf": "Télécharger PDF",
+    "print_or_pdf": "Imprimer / Enregistrer en PDF"
   }
 }

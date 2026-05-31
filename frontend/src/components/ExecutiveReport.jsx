@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppContext } from '../context/AppContext';
 import { DEFAULT_PSH, DEFAULT_PR, TARIFF_INJECTION, TARIFF_SELF_CONSUMPTION } from '../config/constants';
 
-export default function ExecutiveReport({ isPdfGenerating }) {
+export default function ExecutiveReport() {
   const { t, i18n } = useTranslation();
   const { onboardingData = {}, dashboardParams = {}, apiData = {}, monthlyCalculations = [] } = useAppContext();
 
@@ -48,10 +48,13 @@ export default function ExecutiveReport({ isPdfGenerating }) {
   const lossMad = surplusLost * TARIFF_INJECTION;
   const isExceeded = surplusLost > 0;
   const generatedDate = new Date().toLocaleDateString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-  const projectId = `MARO-${new Date().getFullYear()}-${city?.name.toUpperCase().replace(/\s+/g, '-')}`;
+  const projectId = `MARO-${new Date().getFullYear()}-${city?.name?.toUpperCase()?.replace(/\s+/g, '-') || 'PROJECT'}`;
 
   return (
-    <div id="executive-report-content" className={`${isPdfGenerating ? 'absolute left-[-9999px] top-[-9999px] w-[800px]' : 'hidden'} print:block print:w-full print:static print:left-auto print:top-auto text-black bg-white font-sans p-8`}>
+    <div 
+      id="executive-report-content"
+      className="hidden print:block w-full bg-white text-black font-sans p-8"
+    >
       {/* Section 1: Cover */}
       <div className="border-b-2 border-black pb-6 mb-8">
         <h1 className="text-4xl font-bold mb-2 tracking-tight">{t('report.cover_title')}</h1>
