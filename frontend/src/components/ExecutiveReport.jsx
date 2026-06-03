@@ -53,7 +53,7 @@ export default function ExecutiveReport() {
   return (
     <div 
       id="executive-report-content"
-      className="hidden print:block w-full bg-white text-black font-sans p-8"
+      className="hidden print:block print:w-full print:static text-black bg-white font-sans p-8"
     >
       {/* Section 1: Cover */}
       <div className="border-b-2 border-black pb-6 mb-8">

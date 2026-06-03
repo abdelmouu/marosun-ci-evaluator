@@ -8,10 +8,11 @@ from app.constants import (
     ANRE_SELF_CONSUMPTION_TARIFF_MAD_KWH,
     ANRE_INJECTION_CREDIT_AVG_MAD_KWH,
     MOROCCAN_GRID_CO2_FACTOR_KG_KWH,
-    LAW_82_21_SURPLUS_INJECTION_CAP
+    LAW_82_21_SURPLUS_INJECTION_CAP,
+    PV_SYSTEM_DEFAULT_PR
 )
 
-def calculate_dynamic_pr(ghi_val: float, t2m_val: float, noct: float = 45.0, gamma: float = -0.004, pr_base: float = 0.82):
+def calculate_dynamic_pr(ghi_val: float, t2m_val: float, noct: float = 45.0, gamma: float = -0.004, pr_base: float = PV_SYSTEM_DEFAULT_PR):
     """Calcule le PR dynamique basé sur la T2M et l'irradiance (Loi thermique NOCT simplifiée)"""
     if ghi_val <= 0:
         return pr_base, t2m_val
@@ -34,6 +35,7 @@ def calculate_solar_metrics(
     total_t_cell = 0.0
     total_pr = 0.0
     valid_days = 0
+    pr_daily_dict = {}
 
     # 1 & 2. Calculate PSH and Annual Yield applying thermal mechanics day by day
     for date_str, ghi in ghi_daily.items():
@@ -45,14 +47,18 @@ def calculate_solar_metrics(
         if use_dynamic_pr:
             pr_dyn, t_cell = calculate_dynamic_pr(ghi, t2m)
         else:
-            pr_dyn, t_cell = 0.78, t2m
+            pr_dyn, t_cell = PV_SYSTEM_DEFAULT_PR, t2m
             
         e_ac += p_kwp * ghi * pr_dyn
+        pr_daily_dict[date_str] = pr_dyn
         
         valid_ghi.append(ghi)
         total_t_cell += t_cell
         total_pr += pr_dyn
         valid_days += 1
+
+    if valid_days == 0:
+        raise ValueError("No valid irradiance data found. Cannot perform calculation.")
 
     annual_psh = sum(valid_ghi)
     avg_cell_temp = total_t_cell / valid_days if valid_days else 0
@@ -105,5 +111,7 @@ def calculate_solar_metrics(
             "pr_used_avg": round(avg_pr, 3),
             "avg_cell_temp_c": round(avg_cell_temp, 1)
         }
+
+    result["pr_daily"] = pr_daily_dict
         
     return result

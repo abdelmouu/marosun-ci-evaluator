@@ -13,7 +13,7 @@ app = FastAPI(title="MaroSun C&I Evaluator API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -68,6 +68,7 @@ class RawDataModel(BaseModel):
     ghi_daily: Dict[str, float]
     dni_daily: Dict[str, float]
     t2m_daily: Dict[str, float]
+    pr_daily: Dict[str, float]
 
 class SolarDataResponse(BaseModel):
     metadata: MetadataModel
@@ -106,8 +107,9 @@ async def get_solar_data(payload: SolarDataRequest):
             response = await client.get(nasa_url, params=query_params)
             response.raise_for_status()
             nasa_data = response.json()
-        except Exception:
+        except (httpx.RequestError, httpx.HTTPStatusError) as e:
             # Intercepte Timeouts, 404, 5xx, ou erreurs de connexion
+            print(f"NASA API Error: {e}")
             is_simulated = True
 
     ghi_daily = {}
@@ -137,13 +139,16 @@ async def get_solar_data(payload: SolarDataRequest):
             raise HTTPException(status_code=502, detail="Unexpected JSON match.")
 
     # Calculs via le moteur technique
-    calculated_results = calculate_solar_metrics(
-        ghi_daily=ghi_daily,
-        t2m_daily=t2m_daily,
-        p_kwp=payload.system_size_kwp,
-        alpha_self=payload.self_consumption_ratio,
-        use_dynamic_pr=payload.use_dynamic_pr
-    )
+    try:
+        calculated_results = calculate_solar_metrics(
+            ghi_daily=ghi_daily,
+            t2m_daily=t2m_daily,
+            p_kwp=payload.system_size_kwp,
+            alpha_self=payload.self_consumption_ratio,
+            use_dynamic_pr=payload.use_dynamic_pr
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
     return {
         "metadata": {
@@ -157,6 +162,7 @@ async def get_solar_data(payload: SolarDataRequest):
             "unit": "kWh/m²/day",
             "ghi_daily": ghi_daily,
             "dni_daily": dni_daily,
-            "t2m_daily": t2m_daily
+            "t2m_daily": t2m_daily,
+            "pr_daily": calculated_results.pop("pr_daily", {})
         }
     }
