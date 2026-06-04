@@ -18,6 +18,7 @@ export function AppProvider({ children }) {
     pKwp: 100,
     alphaSelf: 75,
     useDynamicThermal: false,
+    showRegulatoryGauge: false,
     activeProfile: '',
   });
   
@@ -76,6 +77,7 @@ export function AppProvider({ children }) {
       pKwp: pKwpVal,
       alphaSelf: alphaSelfVal,
       useDynamicThermal: false,
+      showRegulatoryGauge: false,
       activeProfile: data.profile,
     });
 

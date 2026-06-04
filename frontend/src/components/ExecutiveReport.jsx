@@ -51,9 +51,9 @@ export default function ExecutiveReport() {
   const projectId = `MARO-${new Date().getFullYear()}-${city?.name?.toUpperCase()?.replace(/\s+/g, '-') || 'PROJECT'}`;
 
   return (
-    <div 
+    <div
       id="executive-report-content"
-      className="hidden print:block print:w-full print:static text-black bg-white font-sans p-8"
+      className="hidden print:block print:w-full print:static bg-white text-text-body font-sans p-8"
     >
       {/* Section 1: Cover */}
       <div className="border-b-2 border-black pb-6 mb-8">
@@ -69,24 +69,24 @@ export default function ExecutiveReport() {
       <div className="mb-10">
         <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 pb-2">{t('report.exec_summary_title')}</h2>
         <div className="grid grid-cols-2 gap-6 mb-6">
-          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <p className="text-xs text-gray-500 uppercase tracking-wider">{t('report.capacity')}</p>
-            <p className="text-2xl font-bold">{pKwp} <span className="text-sm font-normal">kWp</span></p>
+          <div className="p-4 bg-canvas-base border border-card-border rounded-sm">
+            <p className="text-[10px] text-text-muted uppercase tracking-[0.15em] font-semibold">{t('report.capacity')}</p>
+            <p className="text-2xl font-bold font-mono text-text-heading mt-2 tabular-nums">{pKwp} <span className="text-sm font-normal">kWp</span></p>
           </div>
-          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <p className="text-xs text-gray-500 uppercase tracking-wider">{t('report.annual_yield')}</p>
-            <p className="text-2xl font-bold">{totalAc.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 0 })} <span className="text-sm font-normal">kWh/yr</span></p>
+          <div className="p-4 bg-canvas-base border border-card-border rounded-sm">
+            <p className="text-[10px] text-text-muted uppercase tracking-[0.15em] font-semibold">{t('report.annual_yield')}</p>
+            <p className="text-2xl font-bold font-mono text-text-heading mt-2 tabular-nums">{totalAc.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 0 })} <span className="text-sm font-normal">kWh/yr</span></p>
           </div>
-          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <p className="text-xs text-gray-500 uppercase tracking-wider">{t('report.annual_benefit')}</p>
-            <p className="text-2xl font-bold">{savingsMad.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 0 })} <span className="text-sm font-normal">MAD/yr</span></p>
+          <div className="p-4 bg-canvas-base border border-card-border rounded-sm">
+            <p className="text-[10px] text-text-muted uppercase tracking-[0.15em] font-semibold">{t('report.annual_benefit')}</p>
+            <p className="text-2xl font-bold font-mono text-text-heading mt-2 tabular-nums">{savingsMad.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 0 })} <span className="text-sm font-normal">MAD/yr</span></p>
           </div>
-          <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-            <p className="text-xs text-gray-500 uppercase tracking-wider">{t('report.avoided_co2')}</p>
-            <p className="text-2xl font-bold">{co2.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 1 })} <span className="text-sm font-normal">Tons/yr</span></p>
+          <div className="p-4 bg-canvas-base border border-card-border rounded-sm">
+            <p className="text-[10px] text-text-muted uppercase tracking-[0.15em] font-semibold">{t('report.avoided_co2')}</p>
+            <p className="text-2xl font-bold font-mono text-text-heading mt-2 tabular-nums">{co2.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 1 })} <span className="text-sm font-normal">Tons/yr</span></p>
           </div>
         </div>
-        <p className="text-sm leading-relaxed text-gray-700">
+        <p className="text-sm leading-relaxed text-text-muted">
           {t('report.summary_text')
             .replace('{{kwp}}', pKwp)
             .replace('{{city}}', city?.name)
@@ -167,12 +167,12 @@ export default function ExecutiveReport() {
           <h2 className="text-2xl font-bold mb-4 border-b border-gray-300 pb-2">{t('report.monthly_title')}</h2>
           <table className="w-full text-xs text-left border-collapse border border-gray-300">
             <thead>
-              <tr className="bg-gray-100 border-b border-gray-300">
-                <th className="py-2 px-3 font-semibold border-r border-gray-300">{t('report.month')}</th>
-                <th className="py-2 px-3 font-semibold border-r border-gray-300 text-right">{t('report.ghi')}</th>
-                <th className="py-2 px-3 font-semibold border-r border-gray-300 text-right">{t('report.pr_col')}</th>
-                <th className="py-2 px-3 font-semibold border-r border-gray-300 text-right">{t('report.yield')}</th>
-                <th className="py-2 px-3 font-semibold text-right">{t('report.benefit')}</th>
+              <tr className="bg-canvas-base border-b border-card-border">
+                <th className="py-2 px-3 font-semibold font-sans text-[10px] uppercase tracking-wider border-b border-card-border text-text-muted">{t('report.month')}</th>
+                <th className="py-2 px-3 font-semibold font-sans text-[10px] uppercase tracking-wider border-b border-card-border text-text-muted text-right">{t('report.ghi')}</th>
+                <th className="py-2 px-3 font-semibold font-sans text-[10px] uppercase tracking-wider border-b border-card-border text-text-muted text-right">{t('report.pr_col')}</th>
+                <th className="py-2 px-3 font-semibold font-sans text-[10px] uppercase tracking-wider border-b border-card-border text-text-muted text-right">{t('report.yield')}</th>
+                <th className="py-2 px-3 font-semibold font-sans text-[10px] uppercase tracking-wider border-b border-card-border text-text-muted text-right">{t('report.benefit')}</th>
               </tr>
             </thead>
             <tbody>
@@ -182,12 +182,12 @@ export default function ExecutiveReport() {
                 const monthlyRevenue = m.benefit - prevBenefit;
 
                 return (
-                  <tr key={i} className="border-b border-gray-200 even:bg-gray-50">
-                    <td className="py-2 px-3 border-r border-gray-300">{m.name}</td>
-                    <td className="py-2 px-3 text-right border-r border-gray-300">{m.ghi.toFixed(2)}</td>
-                    <td className="py-2 px-3 text-right border-r border-gray-300">{m.pr.toFixed(3)}</td>
-                    <td className="py-2 px-3 text-right border-r border-gray-300">{monthlyYield.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 0 })} kWh</td>
-                    <td className="py-2 px-3 text-right font-medium">{monthlyRevenue.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 0 })} MAD</td>
+                  <tr key={i} className="border-b border-card-border even:bg-canvas-base">
+                    <td className="py-2 px-3 border-b border-card-border text-sm text-text-body">{m.name}</td>
+                    <td className="py-2 px-3 text-right border-b border-card-border font-mono text-sm">{m.ghi.toFixed(2)}</td>
+                    <td className="py-2 px-3 text-right border-b border-card-border font-mono text-sm">{m.pr.toFixed(3)}</td>
+                    <td className="py-2 px-3 text-right border-b border-card-border font-mono text-sm">{monthlyYield.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 0 })} kWh</td>
+                    <td className="py-2 px-3 text-right border-b border-card-border font-mono text-sm">{monthlyRevenue.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 0 })} MAD</td>
                   </tr>
                 );
               })}

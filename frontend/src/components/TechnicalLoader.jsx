@@ -57,7 +57,7 @@ export default function TechnicalLoader() {
 
   return (
     <div className="flex-1 flex items-center justify-center p-4">
-      <div className="w-full max-w-[480px] bg-white/75 backdrop-blur-xl border border-[rgba(210,222,240,0.90)] shadow-[0_8px_32px_rgba(50,80,130,0.10)] rounded-2xl p-8 flex flex-col items-center">
+      <div className="w-full max-w-[480px] bg-card-surface border border-card-border rounded-sm p-8 flex flex-col items-center">
         
         {!showError ? (
           <svg className="w-12 h-12 animate-spin text-brand mb-8" viewBox="0 0 50 50">
@@ -73,7 +73,7 @@ export default function TechnicalLoader() {
             />
           </svg>
         ) : (
-          <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center mb-8 animate-in zoom-in duration-300">
+          <div className="w-12 h-12 rounded-sm bg-rose-100 flex items-center justify-center mb-8 animate-in zoom-in duration-300">
             <svg className="w-6 h-6 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
               <line x1="12" y1="9" x2="12" y2="13"></line>
@@ -96,9 +96,9 @@ export default function TechnicalLoader() {
                 }`}
               >
                 <div className="mt-1.5 shrink-0">
-                  <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-                    isDone ? 'bg-[#2D7D5B]' :
-                    isActive ? 'bg-brand animate-pulse' : 
+                  <div className={`w-2 h-2 rounded-sm transition-colors duration-300 ${
+                    isDone ? 'bg-data-co2' :
+                    isActive ? 'bg-brand animate-pulse' :
                     'bg-text-faint'
                   }`} />
                 </div>
@@ -116,7 +116,7 @@ export default function TechnicalLoader() {
         </div>
 
         {showError && (
-          <div className="mt-8 p-4 bg-rose-50 border border-rose-200 rounded-xl w-full animate-in fade-in zoom-in-95 duration-300 shadow-sm">
+          <div className="mt-8 p-4 bg-rose-50 border border-rose-200 rounded-sm w-full animate-in fade-in zoom-in-95 duration-300">
             <p className="text-sm font-semibold text-rose-600 text-center leading-relaxed">
               {t('loader.nasa_unavailable')}
               <br/>

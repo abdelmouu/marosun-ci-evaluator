@@ -113,17 +113,17 @@ export default function OnboardingWizard() {
 
   return (
     <div className="flex-1 flex items-center justify-center p-4">
-      <div className="w-full max-w-[640px] bg-white/75 backdrop-blur-xl border border-[rgba(210,222,240,0.90)] shadow-[0_8px_32px_rgba(50,80,130,0.10)] rounded-2xl p-8 flex flex-col transition-all duration-300">
+      <div className="w-full max-w-[640px] bg-card-surface border border-card-border rounded-sm p-8 flex flex-col">
         
         {/* Progress Bar (Now 4 Steps) */}
         <div className="flex items-center justify-center mb-8 relative">
-          <div className="absolute top-1/2 left-[10%] right-[10%] h-[2px] bg-[rgba(210,222,240,0.90)] -z-10 -translate-y-1/2"></div>
+          <div className="absolute top-1/2 left-[10%] right-[10%] h-[1px] bg-card-border -z-10 -translate-y-1/2"></div>
           {[1, 2, 3, 4].map((num) => (
             <div key={num} className="flex-1 flex justify-center z-10">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-300 ${
-                step >= num 
-                  ? 'bg-brand text-white shadow-[0_2px_8px_rgba(232,160,32,0.40)]' 
-                  : 'bg-white text-text-muted border border-[rgba(210,222,240,0.90)]'
+              <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-xs font-mono font-medium transition-colors duration-150 ${
+                step >= num
+                  ? 'bg-brand text-white'
+                  : 'bg-canvas-base text-text-muted border border-card-border'
               }`}>
                 {num}
               </div>
@@ -137,21 +137,18 @@ export default function OnboardingWizard() {
             <h2 className="text-xl font-bold text-text-heading mb-1 text-center">{t('onboarding.step1_title', 'Select Language / Choisissez votre langue')}</h2>
             <p className="text-sm text-text-muted mb-8 text-center">{t('onboarding.step1_subtitle', 'Technical Solar Valuation Framework')}</p>
             
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-4 mt-6">
               <button 
-                onClick={() => handleLanguageSelect('en')}
-                className="p-8 rounded-2xl border border-[rgba(210,222,240,0.90)] bg-white/50 hover:bg-white hover:border-brand/40 hover:shadow-lg transition-all flex flex-col items-center gap-3"
+                onClick={() => handleLanguageSelect('en')} 
+                className="p-8 rounded-sm border border-card-border bg-canvas-base hover:border-brand hover:bg-card-surface transition-colors flex items-center justify-center"
               >
-                <span className="text-4xl">🇬🇧</span>
-                <span className="font-bold text-text-heading">English</span>
+                <span className="font-sans font-semibold text-text-heading tracking-wide">English</span>
               </button>
-              
               <button 
-                onClick={() => handleLanguageSelect('fr')}
-                className="p-8 rounded-2xl border border-[rgba(210,222,240,0.90)] bg-white/50 hover:bg-white hover:border-brand/40 hover:shadow-lg transition-all flex flex-col items-center gap-3"
+                onClick={() => handleLanguageSelect('fr')} 
+                className="p-8 rounded-sm border border-card-border bg-canvas-base hover:border-brand hover:bg-card-surface transition-colors flex items-center justify-center"
               >
-                <span className="text-4xl">🇲🇦</span>
-                <span className="font-bold text-text-heading">Français</span>
+                <span className="font-sans font-semibold text-text-heading tracking-wide">Français</span>
               </button>
             </div>
           </div>
@@ -215,13 +212,13 @@ export default function OnboardingWizard() {
               {PROFILES.map((profile) => {
                 const isSelected = selectedProfile === profile.id;
                 return (
-                  <div 
+                  <div
                     key={profile.id}
                     onClick={() => setSelectedProfile(profile.id)}
-                    className={`p-5 rounded-xl border cursor-pointer transition-all duration-150 ease-out flex flex-col gap-3 ${
-                      isSelected 
-                        ? 'bg-brand/10 border-brand shadow-[0_2px_8px_rgba(232,160,32,0.20)]' 
-                        : 'bg-white/50 border-[rgba(210,222,240,0.90)] hover:bg-white/80 hover:shadow-md'
+                    className={`p-5 rounded-sm border cursor-pointer transition-colors duration-150 flex flex-col gap-3 ${
+                      isSelected
+                        ? 'bg-canvas-base border-brand'
+                        : 'bg-card-surface border-card-border hover:bg-canvas-base hover:border-text-muted'
                     }`}
                   >
                     {profile.icon}
@@ -248,31 +245,31 @@ export default function OnboardingWizard() {
             
             <div className="flex flex-col gap-6">
               <div>
-                <label className="block text-xs font-semibold text-text-muted mb-2 uppercase tracking-wide">
+                <label className="block text-[10px] font-semibold text-text-muted mb-2 uppercase tracking-[0.15em]">
                   {t('onboarding.monthly_bill_label', 'Facture mensuelle moyenne (MAD)')}
                 </label>
-                <input 
+                <input
                   type="number"
                   min="0"
                   placeholder="Ex: 25000"
                   value={monthlyBill}
                   onChange={(e) => setMonthlyBill(e.target.value)}
-                  className="w-full bg-white/60 border border-[rgba(210,222,240,0.90)] rounded-xl px-4 py-3 text-text-body focus:ring-2 focus:ring-brand/30 outline-none transition-all placeholder:text-text-faint font-medium tabular-nums"
+                  className="w-full bg-canvas-base border border-card-border rounded-sm px-4 py-3 text-text-body focus:ring-2 focus:ring-brand/30 outline-none transition-all placeholder:text-text-faint font-mono tabular-nums"
                 />
               </div>
 
-              <div className="bg-canvas-from/50 border border-[rgba(210,222,240,0.60)] rounded-xl p-5 flex flex-col gap-3">
+              <div className="bg-canvas-base border border-card-border rounded-sm p-5 flex flex-col gap-3">
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-text-body font-medium">{t('onboarding.est_consumption', 'Consommation estimée :')}</span>
-                  <span className="text-sm text-brand font-bold tabular-nums">
-                    {isBillValid ? estimatedMonthlyKwh.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 0 }) : '0'} <span className="text-xs text-text-muted font-medium">kWh/{t('onboarding.month_short', 'mois')}</span>
+                  <span className="font-mono text-sm text-brand font-bold tabular-nums">
+                    {isBillValid ? estimatedMonthlyKwh.toLocaleString(i18n.language === 'fr' ? 'fr-MA' : 'en-US', { maximumFractionDigits: 0 }) : '0'} <span className="text-xs text-text-muted font-normal">kWh/{t('onboarding.month_short', 'mois')}</span>
                   </span>
                 </div>
-                <div className="border-t border-[rgba(210,222,240,0.40)]"></div>
+                <div className="border-t border-card-border"></div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-text-body font-medium">{t('onboarding.est_kwp', 'Puissance cible suggérée :')}</span>
-                  <span className="text-lg text-brand font-bold tabular-nums">
-                    {isBillValid ? Math.round(estimatedKwp) : '0'} <span className="text-xs text-text-muted font-medium">kWp</span>
+                  <span className="font-mono text-lg text-brand font-bold tabular-nums">
+                    {isBillValid ? Math.round(estimatedKwp) : '0'} <span className="text-xs text-text-muted font-normal">kWp</span>
                   </span>
                 </div>
               </div>
@@ -282,20 +279,20 @@ export default function OnboardingWizard() {
 
         {/* Navigation (Hidden on Step 1) */}
         {step > 1 && (
-          <div className="mt-8 pt-6 border-t border-[rgba(210,222,240,0.60)] flex justify-between items-center">
-            <button 
+          <div className="mt-8 pt-6 border-t border-card-border flex justify-between items-center">
+            <button
               onClick={handleBack}
               className={`text-sm font-medium transition-colors duration-150 ${step > 1 ? 'text-text-muted hover:text-text-body' : 'text-transparent pointer-events-none'}`}
             >
               {t('onboarding.back', 'Retour')}
             </button>
-            <button 
+            <button
               onClick={handleNext}
               disabled={isNextDisabled}
-              className={`px-6 py-2.5 rounded-[10px] text-sm font-semibold transition-all duration-150 flex items-center gap-2 ${
-                isNextDisabled 
-                  ? 'bg-text-faint text-white/70 opacity-50 cursor-not-allowed' 
-                  : 'bg-brand text-white shadow-[0_2px_8px_rgba(232,160,32,0.30)] hover:bg-[#C4851A] hover:shadow-md'
+              className={`px-6 py-2.5 rounded-sm text-sm font-semibold transition-colors duration-150 ${
+                isNextDisabled
+                  ? 'bg-text-faint text-white/70 opacity-50 cursor-not-allowed'
+                  : 'bg-brand text-white hover:bg-brand-dim'
               }`}
             >
               {step === 4 ? t('onboarding.generate', "Générer l'audit") : t('onboarding.continue', 'Continuer')}

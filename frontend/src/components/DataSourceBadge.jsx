@@ -9,7 +9,7 @@ export default function DataSourceBadge({ source, error }) {
   if (isSimulated) {
     return (
       <div 
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide bg-[rgba(192,57,43,0.08)] border border-[rgba(192,57,43,0.25)] text-[#C0392B] cursor-help transition-all duration-200"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-sm text-[11px] font-sans font-medium uppercase tracking-wider bg-[#FEF2F2] border border-[#FECACA] text-[#DC2626] cursor-help"
         title={t('data_source.simulated_tooltip')}
       >
         <span>{t('data_source.simulated')}</span>
@@ -20,7 +20,7 @@ export default function DataSourceBadge({ source, error }) {
   if (source === 'live') {
     return (
       <div 
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide text-[#2D7D5B] bg-[rgba(45,125,91,0.08)] border border-[rgba(45,125,91,0.25)] cursor-default transition-all duration-200"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-sm text-[11px] font-sans font-medium uppercase tracking-wider bg-[#ECFDF5] border border-[#A7F3D0] text-[#059669] cursor-default"
         title={t('data_source.live_tooltip')}
       >
         <span>{t('data_source.live')}</span>

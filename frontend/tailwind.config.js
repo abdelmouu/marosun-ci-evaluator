@@ -7,34 +7,15 @@ export default {
   theme: {
     extend: {
       colors: {
-        brand: {
-          DEFAULT: '#E8A020',
-          dim: '#C4851A',
-        },
-        canvas: {
-          base: '#EDF1F7',
-          from: '#E8EEF5',
-          to: '#F2F5FA',
-        },
-        card: {
-          surface: 'rgba(255, 255, 255, 0.75)',
-          border: 'rgba(210, 222, 240, 0.90)',
-          hover: 'rgba(255, 255, 255, 0.92)',
-        },
-        text: {
-          heading: '#1A2540',
-          body: '#2E3F5C',
-          muted: '#6B7FA3',
-          faint: '#9BABC8',
-        },
-        data: {
-          bar: '#4F7CAC',
-          line: '#E8A020',
-          co2: '#2D7D5B',
-        },
+        brand: { DEFAULT: '#B45309', dim: '#D97706' },
+        canvas: { base: '#F5F4F1', from: '#F5F4F1', to: '#F5F4F1' },
+        card: { surface: '#FFFFFF', border: '#E2E8F0', hover: '#FFFFFF' },
+        text: { heading: '#0F172A', body: '#334155', muted: '#64748B', faint: '#94A3B8' },
+        data: { bar: '#D97706', line: '#64748B', co2: '#059669' },
       },
       fontFamily: {
         sans: ['Sora', 'sans-serif'],
+        mono: ['"IBM Plex Mono"', 'monospace'],
       },
     },
   },

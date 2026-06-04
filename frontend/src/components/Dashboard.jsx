@@ -56,33 +56,47 @@ export default function Dashboard() {
     "[&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:w-[18px] [&::-moz-range-thumb]:h-[18px] [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-[#E8A020] [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(232,160,32,0.40)] [&::-moz-range-thumb]:cursor-grab active:[&::-moz-range-thumb]:cursor-grabbing [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:duration-150 [&::-moz-range-thumb]:ease-out hover:[&::-webkit-slider-thumb]:scale-110 hover:[&::-webkit-slider-thumb]:shadow-[0_2px_12px_rgba(232,160,32,0.60)] [&::-moz-range-thumb]:border-none";
 
   return (
-    <>
+    <div className="flex-1 w-full mx-auto flex flex-row min-h-screen">
       {/* SIDEBAR */}
-      <aside className="w-[260px] bg-white/60 backdrop-blur-xl saturate-[180%] border-r border-[rgba(200,215,235,0.80)] shadow-[4px_0_20px_rgba(50,80,130,0.06)] px-5 py-6 flex flex-col shrink-0 justify-between overflow-y-auto">
+      <aside className="w-[260px] bg-card-surface border-r border-card-border flex flex-col shrink-0 py-6 px-5 print:hidden">
         <div className="flex flex-col">
 
-          <div>
+          <div className="mb-6">
             <h1 className="text-sm font-bold tracking-tight text-text-heading">
-              <span className="text-[#E8A020]">MaroSun</span> C&I Evaluator
+              <span className="text-brand">MaroSun</span> C&I Evaluator
             </h1>
-            <p className="text-[10px] font-medium text-text-faint tracking-[0.05em] mt-0.5">
+            <p className="text-[10px] font-medium text-text-muted tracking-[0.05em] mt-0.5">
               {t('dashboard.subtitle')}
             </p>
           </div>
 
-          <div className="border-t border-[rgba(200,215,235,0.50)] mt-5 print:hidden" />
+          <div className="border-t border-card-border mt-0 print:hidden" />
 
           <div className="mt-5 print:hidden">
             <HubSelector selectedCity={selectedCity} onSelectCity={updateCity} />
           </div>
 
-          <div className="border-t border-[rgba(200,215,235,0.50)] mt-5 print:hidden" />
+          <div className="border-t border-card-border mt-5 print:hidden" />
 
-          <div className="flex flex-col gap-4 mt-5 print:hidden">
+          <div className="flex flex-col gap-5 mt-5 print:hidden">
+            {/* Capacity Slider */}
             <div className="flex flex-col">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[11px] font-medium text-text-body">{t('dashboard.target_size')}</span>
-                <span className="text-sm font-bold text-brand tabular-nums">{pKwp} {t('common.kwp')}</span>
+              <div className="flex justify-between items-center mb-3 gap-4">
+                <label className="text-[10px] font-semibold uppercase tracking-[0.15em] text-text-muted leading-tight">
+                  {t('slider.installedCapacity')}
+                </label>
+                <div className="flex items-center justify-between w-[90px] border border-card-border rounded-sm bg-canvas-base px-2 py-1.5 shadow-sm shrink-0">
+                  <input
+                    type="number"
+                    value={pKwp === 0 ? '' : pKwp}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      updateDashboardParams({ pKwp: val === '' ? 0 : Number(val) });
+                    }}
+                    className="w-full bg-transparent text-right font-mono text-sm text-text-heading outline-none focus:ring-0 appearance-none"
+                  />
+                  <span className="text-[11px] text-text-muted ml-1.5 font-mono shrink-0">kWp</span>
+                </div>
               </div>
               <input
                 type="range"
@@ -96,10 +110,24 @@ export default function Dashboard() {
               />
             </div>
 
+            {/* Self-Consumption Slider */}
             <div className="flex flex-col">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-[11px] font-medium text-text-body">{t('dashboard.self_consumption')}</span>
-                <span className="text-sm font-bold text-brand tabular-nums">{alphaSelf}%</span>
+              <div className="flex justify-between items-center mb-3 gap-4 mt-6">
+                <label className="text-[10px] font-semibold uppercase tracking-[0.15em] text-text-muted leading-tight">
+                  {t('slider.selfConsumptionRate')}
+                </label>
+                <div className="flex items-center justify-between w-[90px] border border-card-border rounded-sm bg-canvas-base px-2 py-1.5 shadow-sm shrink-0">
+                  <input
+                    type="number"
+                    value={alphaSelf === 0 ? '' : alphaSelf}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      updateDashboardParams({ alphaSelf: val === '' ? 0 : Number(val), activeProfile: 'custom' });
+                    }}
+                    className="w-full bg-transparent text-right font-mono text-sm text-text-heading outline-none focus:ring-0 appearance-none"
+                  />
+                  <span className="text-[11px] text-text-muted ml-1.5 font-mono shrink-0">%</span>
+                </div>
               </div>
               <input
                 type="range"
@@ -135,37 +163,52 @@ export default function Dashboard() {
               </div>
             </div>
 
-            <div className="border-t border-[rgba(200,215,235,0.40)] mt-2 print:hidden" />
+            <div className="border-t border-card-border mt-2 print:hidden" />
 
-            {/* NOCT Thermal Toggle */}
+            {/* NOCT Thermal Segmented Control */}
             <div className="flex flex-col mt-2 print:hidden">
-              <div className="flex justify-between items-center">
-                <div>
-                  <span className="text-[11px] font-semibold text-text-body">{t('dashboard.thermal_model')}</span>
-                  <p className="text-[9px] text-text-faint mt-0.5 leading-tight pr-2">{t('dashboard.thermal_desc')}</p>
-                </div>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-text-muted mb-2">
+                {t('dashboard.thermal_model')}
+              </span>
+              <div className="flex p-1 bg-canvas-base border border-card-border rounded-md">
                 <button
-                  onClick={() => updateDashboardParams({ useDynamicThermal: !useDynamicThermal })}
-                  className={`relative shrink-0 w-10 h-5 rounded-full transition-colors duration-200 ${useDynamicThermal ? 'bg-brand' : 'bg-[rgba(100,130,170,0.20)]'}`}
+                  onClick={() => updateDashboardParams({ useDynamicThermal: false })}
+                  className={`flex-1 px-2 py-1 text-[10px] font-medium rounded-sm transition-colors ${
+                    !useDynamicThermal
+                      ? 'bg-card-surface shadow-sm border border-card-border text-text-heading'
+                      : 'bg-transparent text-text-muted hover:text-text-heading'
+                  }`}
                 >
-                  <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow-md transition-transform duration-200 ${useDynamicThermal ? 'translate-x-5' : 'translate-x-0'}`} />
+                  {t('common.disabled')}
+                </button>
+                <button
+                  onClick={() => updateDashboardParams({ useDynamicThermal: true })}
+                  className={`flex-1 px-2 py-1 text-[10px] font-medium rounded-sm transition-colors ${
+                    useDynamicThermal
+                      ? 'bg-card-surface shadow-sm border border-card-border text-text-heading'
+                      : 'bg-transparent text-text-muted hover:text-text-heading'
+                  }`}
+                >
+                  {t('common.enabled')}
                 </button>
               </div>
 
               {/* Micro KPI Thermique */}
               {dashboardParams?.useDynamicThermal && apiData?.metrics?.thermal_model && (
-                <div className="mt-3 bg-white/40 rounded-lg p-2.5 border border-[rgba(210,222,240,0.60)] flex flex-col gap-1 shadow-sm">
+                <div className="mt-3 bg-canvas-base p-2.5 border border-card-border flex flex-col gap-1">
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] text-text-muted">{t('dashboard.effective_pr')}</span>
-                    <span className="text-[11px] font-bold text-brand tabular-nums">{(apiData?.metrics?.thermal_model?.pr_used_avg || 0).toFixed(3)}</span>
+                    <span className="font-mono text-[11px] font-bold text-brand tabular-nums">{(apiData?.metrics?.thermal_model?.pr_used_avg || 0).toFixed(3)}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] text-text-muted">{t('dashboard.avg_cell_temp')}</span>
-                    <span className="text-[10px] font-medium text-text-muted tabular-nums">{(apiData?.metrics?.thermal_model?.avg_cell_temp_c || 0).toFixed(1)} °C</span>
+                    <span className="font-mono text-[10px] font-medium text-text-muted tabular-nums">{(apiData?.metrics?.thermal_model?.avg_cell_temp_c || 0).toFixed(1)} °C</span>
                   </div>
                 </div>
               )}
             </div>
+
+
 
           </div>
         </div>
@@ -182,7 +225,7 @@ export default function Dashboard() {
       </aside>
 
       {/* DASHBOARD WORKSPACE */}
-      <main className="flex-1 flex flex-col overflow-y-auto px-7 py-6">
+      <main className="flex-1 flex flex-col px-8 py-8 gap-6 min-w-0 bg-canvas-base print:bg-white print:p-0">
 
         <header className="flex justify-between items-center border-b border-card-border pb-2 print:hidden">
           <div>
@@ -205,8 +248,14 @@ export default function Dashboard() {
           </div>
         </header>
 
-        <div className="mt-5 print:hidden">
-          <KpiCards yields={liveYield} savings={liveSavings} co2={liveCo2} />
+        <div className="print:hidden">
+          <KpiCards
+            yields={apiData?.metrics?.summary?.total_generated_kwh || (pKwp * 1820 * 0.78)}
+            selfConsumed={apiData?.metrics?.splits?.self_consumed_kwh || 0}
+            gridSurplus={apiData?.metrics?.splits?.surplus_allowed_grid_kwh || 0}
+            revenue={apiData?.metrics?.financials?.total_annual_benefit_mad || 0}
+            co2={apiData?.metrics?.environmental?.avoided_co2_tons_per_year || 0}
+          />
         </div>
 
         <div className="mt-4 print:hidden">
@@ -225,6 +274,6 @@ export default function Dashboard() {
 
         <ExecutiveReport />
       </main>
-    </>
+    </div>
   );
 }

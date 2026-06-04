@@ -9,7 +9,7 @@ function AppRouter() {
   const { appPhase } = useAppContext();
 
   return (
-    <div className="min-h-screen w-screen bg-gradient-to-br from-canvas-from to-canvas-to text-text-body flex flex-col antialiased font-sans select-none">
+    <div className="min-h-screen w-full bg-canvas-base text-text-body flex flex-col antialiased font-sans select-none overflow-x-hidden">
       <div className="flex-1 flex">
         {appPhase === 'onboarding' && <OnboardingWizard />}
         {appPhase === 'loading' && <TechnicalLoader />}

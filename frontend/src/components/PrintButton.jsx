@@ -28,7 +28,7 @@ export default function PrintButton() {
   return (
     <button
       onClick={handlePrint}
-      className="bg-[#E8A020] text-white text-sm font-semibold py-2.5 px-5 rounded-[10px] shadow-[0_2px_8px_rgba(232,160,32,0.30)] flex items-center gap-2 transition-all duration-150 ease-out hover:bg-[#C4851A] hover:shadow-[0_4px_16px_rgba(232,160,32,0.45)] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 active:shadow-[0_1px_4px_rgba(232,160,32,0.25)]"
+      className="bg-brand text-white text-sm font-sans font-medium py-2 px-4 rounded-sm flex items-center gap-2 transition-colors duration-150 hover:bg-brand-dim active:bg-brand"
     >
       <svg 
         className="w-4 h-4 text-white" 

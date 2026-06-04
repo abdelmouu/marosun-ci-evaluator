@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
-/* Tailwind v4 Modern Theme Directive Declarations */
 @theme {
-  --color-brand: #E8A020;
-  --color-brand-dim: #C4851A;
-  --color-canvas-base: #EDF1F7;
-  --color-canvas-from: #E8EEF5;
-  --color-canvas-to: #F2F5FA;
-  --color-card-surface: rgba(255, 255, 255, 0.75);
-  --color-card-border: rgba(210, 222, 240, 0.90);
-  --color-card-hover: rgba(255, 255, 255, 0.92);
-  --color-text-heading: #1A2540;
-  --color-text-body: #2E3F5C;
-  --color-text-muted: #6B7FA3;
-  --color-text-faint: #9BABC8;
-  --color-data-bar: #4F7CAC;
-  --color-data-line: #E8A020;
-  --color-data-co2: #2D7D5B;
+  --color-brand: #B45309;
+  --color-brand-dim: #D97706;
+  --color-canvas-base: #F5F4F1;
+  --color-canvas-from: #F5F4F1;
+  --color-canvas-to: #F5F4F1;
+  --color-card-surface: #FFFFFF;
+  --color-card-border: #E2E8F0;
+  --color-card-hover: #FFFFFF;
+  --color-text-heading: #0F172A;
+  --color-text-body: #334155;
+  --color-text-muted: #64748B;
+  --color-text-faint: #94A3B8;
+  --color-data-bar: #D97706;
+  --color-data-line: #64748B;
+  --color-data-co2: #059669;
   --font-sans: 'Sora', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
 }
 
 body, #root {
@@ -40,100 +40,32 @@ text {
 }
 
 @media print {
-  @page {
-    size: A4 landscape;
-    margin: 15mm 20mm;
-  }
-  
-  html, body {
-    font-size: 11px !important;
+  @page { size: A4 portrait; margin: 15mm 20mm; }
+
+  aside { display: none !important; }
+
+  main, #root, body, html {
     background: #FFFFFF !important;
-    color: #1A1A1A !important;
     height: auto !important;
     overflow: visible !important;
+  }
+
+  .print\:hidden { display: none !important; }
+
+  body {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* Root and main panel background flattening structure */
-  #root, div, main {
-    background: #FFFFFF !important;
-    color: #1A1A1A !important;
-    box-shadow: none !important;
-    transform: none !important;
-    overflow: visible !important;
-  }
-
-  /* Structural glass dashboard cards clean style compression rules */
-  .backdrop-blur-xl, .backdrop-blur-lg, .bg-white\/60, .bg-white\/75, section, div {
-    background: #FFFFFF !important;
+  /* Flatten residual backdrop-filter and shadows */
+  * {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    border-color: #C8D0DC !important;
     box-shadow: none !important;
   }
 
-  /* Sidebar framing alignment configuration */
-  aside {
-    background: #FFFFFF !important;
-    border-right: 1px solid #D0D8E4 !important;
-    border-right-color: #D0D8E4 !important;
-    box-shadow: none !important;
-    height: auto !important;
-  }
-
-  /* Typography element flattening values map */
-  h1, h2, h3, .text-text-heading {
-    color: #000000 !important;
-  }
-  
-  body, p, span, .text-text-body {
-    color: #1A1A1A !important;
-  }
-
-  .text-text-muted, .text-text-faint, .text-\[\#8A9DBB\] {
-    color: #555555 !important;
-  }
-
-  /* Brand identifier mapping parameter colors */
-  .text-brand, .text-brand-dim, text[fill="#E8A020"] {
-    color: #1A1A1A !important;
-    fill: #1A1A1A !important;
-  }
-
-  /* KPI metric card baseline data ink mapping */
-  .text-\[\#1A2540\] {
-    color: #000000 !important;
-  }
-  .text-\[\#E8A020\] {
-    color: #1A1A1A !important;
-  }
-  .text-\[\#2D7D5B\] {
-    color: #2A5C45 !important;
-  }
-
-  /* Vector charts graphics ink overrides */
-  .recharts-bar-rectangle path {
-    fill: #4A5568 !important;
-  }
-  
-  .recharts-line-path {
-    stroke: #1A1A1A !important;
-    stroke-width: 2.5px !important;
-  }
-
-  .recharts-line-dot, .recharts-line-active-dot {
-    fill: #1A1A1A !important;
-    stroke: #FFFFFF !important;
-  }
-
-  .recharts-cartesian-grid line {
-    stroke: #CBD5E1 !important;
-    stroke-dasharray: none !important;
-  }
-  
-  /* Guarantee hover items and select tooltips vanish on print */
-  .recharts-tooltip-wrapper, .no-print {
-    display: none !important;
-  }
+  /* Chart ink — keep readable on paper */
+  .recharts-tooltip-wrapper { display: none !important; }
+  .recharts-cartesian-grid line { stroke: #CBD5E1 !important; }
+  .recharts-line-path { stroke: #1A1A1A !important; stroke-width: 2px !important; }
 }

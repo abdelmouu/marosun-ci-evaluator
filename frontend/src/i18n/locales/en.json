@@ -63,6 +63,8 @@
     "subtitle": "v1.0.0 • Industrial Framework",
     "target_size": "Target Size (P_kWp)",
     "self_consumption": "Self Consumption (α)",
+    "regulatory_toggle": "Regulatory Cap (Law 82-21)",
+    "regulatory_toggle_desc": "Display 20% grid injection limits.",
     "thermal_model": "Thermal Model (NOCT)",
     "thermal_desc": "Adjusts yield according to cell temperature.",
     "effective_pr": "Average effective PR",
@@ -83,7 +85,12 @@
   "kpi": {
     "annual_yield": "Annual AC Yield",
     "annual_savings": "Annual Savings",
-    "avoided_co2": "Avoided CO₂"
+    "avoided_co2": "Avoided CO₂",
+    "annualYield": "ANNUAL YIELD",
+    "selfConsumed": "SELF-CONSUMED",
+    "gridSurplus": "GRID SURPLUS",
+    "netRevenue": "NET REVENUE",
+    "co2Offset": "CO₂ OFFSET"
   },
   "chart": {
     "avg_ghi": "Average GHI",
@@ -91,7 +98,12 @@
     "cumulative_benefit": "Cumulative Benefit",
     "thermal_monetary_yield": "Thermal & Monetary Yield",
     "performance_pr": "Performance (PR)",
-    "recalculating": "Recalculating..."
+    "recalculating": "Recalculating...",
+    "yieldAxis": "Yield (MWh)",
+    "revenueAxis": "Cumulative (MAD k)"
+  },
+  "tooltip": {
+    "month": "Month"
   },
   "loader": {
     "ingesting_nasa": "Ingesting NASA POWER meteorological data for the selected region...",
@@ -110,7 +122,7 @@
   },
   "data_source": {
     "simulated": "⚠️ Simulated Data — NASA API Unavailable",
-    "live": "✓ Live Data — NASA POWER",
+    "live": "✓ Live Data NASA POWER",
     "simulated_tooltip": "Engineering values are based on statistically representative meteorological averages for this region. Connect to the internet to retrieve live NASA POWER data.",
     "live_tooltip": "Verified satellite telemetry data retrieved from NASA POWER."
   },
@@ -167,5 +179,12 @@
     "generating_pdf": "Generating...",
     "download_pdf": "Download PDF",
     "print_or_pdf": "Print / Save as PDF"
+  },
+  "slider": {
+    "installedCapacity": "Installed Capacity",
+    "selfConsumptionRate": "Self-Consumption Rate"
+  },
+  "hub": {
+    "peakSunHours": "{{value}} h/day"
   }
 }

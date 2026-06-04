@@ -63,6 +63,8 @@
     "subtitle": "v1.0.0 • Framework Industriel",
     "target_size": "Puissance Cible (P_kWp)",
     "self_consumption": "Autoconsommation (α)",
+    "regulatory_toggle": "Plafond Légal (Loi 82-21)",
+    "regulatory_toggle_desc": "Afficher les limites d'injection (20%).",
     "thermal_model": "Modèle Thermique (NOCT)",
     "thermal_desc": "Ajuste le rendement selon la temp. des cellules.",
     "effective_pr": "PR effectif moyen",
@@ -83,7 +85,12 @@
   "kpi": {
     "annual_yield": "Productible Annuel AC",
     "annual_savings": "Économies Annuelles",
-    "avoided_co2": "CO₂ Évité"
+    "avoided_co2": "CO₂ Évité",
+    "annualYield": "RENDEMENT ANNUEL",
+    "selfConsumed": "AUTOCONSOMMATION",
+    "gridSurplus": "EXCÉDENT RÉSEAU",
+    "netRevenue": "REVENU NET",
+    "co2Offset": "COMPENSATION CO₂"
   },
   "chart": {
     "avg_ghi": "GHI Moyen",
@@ -91,7 +98,12 @@
     "cumulative_benefit": "Bénéfice Cumulé",
     "thermal_monetary_yield": "Rendement Thermique & Monétaire",
     "performance_pr": "Performance (PR)",
-    "recalculating": "Recalcul en cours..."
+    "recalculating": "Recalcul en cours...",
+    "yieldAxis": "Rendement (MWh)",
+    "revenueAxis": "Cumulé (MAD k)"
+  },
+  "tooltip": {
+    "month": "Mois"
   },
   "loader": {
     "ingesting_nasa": "Ingestion des données météo NASA POWER pour la région sélectionnée...",
@@ -110,7 +122,7 @@
   },
   "data_source": {
     "simulated": "⚠️ Données Simulées — API NASA Indisponible",
-    "live": "✓ Données Live — NASA POWER",
+    "live": "✓ Données Live NASA POWER",
     "simulated_tooltip": "Les valeurs d'ingénierie sont basées sur des moyennes météorologiques statistiquement représentatives pour cette région. Connectez-vous à Internet pour récupérer les données NASA POWER en direct.",
     "live_tooltip": "Données de télémétrie satellitaire vérifiées extraites de NASA POWER."
   },
@@ -167,5 +179,12 @@
     "generating_pdf": "Génération...",
     "download_pdf": "Télécharger PDF",
     "print_or_pdf": "Imprimer / Enregistrer en PDF"
+  },
+  "slider": {
+    "installedCapacity": "Capacité installée",
+    "selfConsumptionRate": "Taux d'autoconsommation"
+  },
+  "hub": {
+    "peakSunHours": "{{value}} h/j"
   }
 }
