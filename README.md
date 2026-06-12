@@ -11,7 +11,7 @@ This tool bridges the gap between complex solar engineering and business decisio
 
 ## Screenshots / Demo
 
-![App Screenshot](path/to/image.png)
+![App Screenshot](frontend/src/assets/dashboard.png)
 
 ---
 
